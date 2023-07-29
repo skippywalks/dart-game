@@ -21,59 +21,54 @@
         .darts-container {
             position: relative;
             width: 50%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
         }
         .dart {
-            position: absolute;
-            top: 50%;
-            left: 10%;
+            position: relative;
             width: 90px;
             height: 150px;
             background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png') no-repeat center;
             background-size: contain;
-            transform: rotate(-90deg) translate(-50%, -50%);
+            transform: rotate(-90deg);
             transform-origin: bottom;
-            transition: transform 0.3s, top 0.3s, left 0.3s;
+            transition: transform 0.3s;
             cursor: pointer;
         }
-        .dart:nth-child(2) {
-            left: calc(10% + 45px);
-        }
-        .dart:nth-child(3) {
-            left: calc(10% + 90px);
-        }
-        .stuck {
-            top: 35% !important;
-            left: 120% !important;
-            transform: rotate(0deg) !important;
+        #reset {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background-color: red;
+            padding: 10px 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="darts-container">
-        <div class="dart">
-        </div>
-        <div class="dart">
-        </div>
-        <div class="dart">
-        </div>
+        <div class="dart"></div>
+        <div class="dart"></div>
+        <div class="dart"></div>
     </div>
-    <div class="dartboard">
-    </div>
+    <div class="dartboard"></div>
+    <div id="reset">Reset</div>
     <script>
         const darts = Array.from(document.querySelectorAll('.dart'));
 
         function animateDartThrow(event) {
             const dart = event.target;
-            dart.style.transform = 'translate(300%, -50%) rotate(90deg)';
-            dart.style.left = '120%';
-            dart.style.top = '35%';
-
-            setTimeout(() => {
-                dart.classList.add('stuck');
-            }, 300); 
+            dart.style.transform = 'rotate(90deg)';
+            dart.removeEventListener('click', animateDartThrow);
         }
 
-        darts.forEach((dart) => dart.addEventListener('click', animateDartThrow));
-    </script>
-</body>
-</html>
+        function resetDarts() {
+            darts.forEach((dart) => {
+                dart.style.transform = 'rotate(-90deg)';
+                dart.addEventListener('click', animateDartThrow);
+            });
+        }
+
+        darts.forEach((dart) => dart.addEventListener('click', animateDart

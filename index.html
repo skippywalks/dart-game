@@ -67,64 +67,64 @@
     </div>
     <div class="dartboard">
     </div>
-    <script>
-        const darts = Array.from(document.querySelectorAll('.dart'));
-        const resetButton = document.querySelector('.reset-button');
+   <script>
+    const darts = Array.from(document.querySelectorAll('.dart'));
+    const resetButton = document.querySelector('.reset-button');
 
-        let currentDart;
-        let offset = [0, 0];
-        let isDown = false;
-        let initialX, initialY; // Add these variables to keep track of initial mouse position
+    let currentDart;
+    let offset = [0, 0];
+    let isDown = false;
+    let initialX, initialY;
 
-function mouseDown(e) {
-    isDown = true;
-    initialX = e.clientX; // Record the initial mouse X position
-    initialY = e.clientY; // Record the initial mouse Y position
-    offset = [currentDart.offsetLeft - e.clientX, currentDart.offsetTop - e.clientY];
-}
+    function mouseDown(e) {
+        isDown = true;
+        initialX = e.clientX;
+        initialY = e.clientY;
+        offset = [currentDart.offsetLeft - e.clientX, currentDart.offsetTop - e.clientY];
+    }
 
+    function mouseMove(e) {
+        e.preventDefault();
+        if (isDown) {
+            currentDart.style.left = `${e.clientX + offset[0]}px`;
+            currentDart.style.top = `${e.clientY + offset[1]}px`;
         }
+    }
 
-        function mouseMove(e) {
-            e.preventDefault();
-            if (isDown) {
-                currentDart.style.left = `${e.clientX + offset[0]}px`;
-                currentDart.style.top = `${e.clientY + offset[1]}px`;
-            }
-        }
-
-        function mouseUp(e) {
-    if (!isDown) return;
+    function mouseUp(e) {
+        if (!isDown) return;
     
-    isDown = false;
+        isDown = false;
 
-    let velocityX = e.clientX - initialX;
-    let velocityY = e.clientY - initialY;
+        let velocityX = e.clientX - initialX;
+        let velocityY = e.clientY - initialY;
 
-    let finalX = currentDart.offsetLeft + velocityX;
-    let finalY = currentDart.offsetTop + velocityY;
+        let finalX = currentDart.offsetLeft + velocityX;
+        let finalY = currentDart.offsetTop + velocityY;
 
-    currentDart.style.left = `${finalX}px`;
-    currentDart.style.top = `${finalY}px`;
-}
-        darts.forEach((dart) => {
-            dart.addEventListener('mousedown', function(e) {
-                currentDart = this;
-                mouseDown(e);
-            });
+        currentDart.style.left = `${finalX}px`;
+        currentDart.style.top = `${finalY}px`;
+    }
+
+    darts.forEach((dart) => {
+        dart.addEventListener('mousedown', function(e) {
+            currentDart = this;
+            mouseDown(e);
         });
+    });
 
-        document.addEventListener('mouseup', mouseUp);
-        document.addEventListener('mousemove', mouseMove);
+    document.addEventListener('mouseup', mouseUp);
+    document.addEventListener('mousemove', mouseMove);
 
-        function resetDarts() {
-            darts.forEach((dart) => {
-                dart.style.left = '50%';
-                dart.style.top = '50%';
-            });
-        }
+    function resetDarts() {
+        darts.forEach((dart) => {
+            dart.style.left = '50%';
+            dart.style.top = '50%';
+        });
+    }
 
-        resetButton.addEventListener('click', resetDarts);
-    </script>
+    resetButton.addEventListener('click', resetDarts);
+</script>
+
 </body>
 </html>

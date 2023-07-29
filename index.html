@@ -92,20 +92,42 @@
     }
 
     function mouseUp(e) {
-        if (!isDown) return;
-    
-        isDown = false;
+    if (!isDown) return;
 
-        let velocityX = e.clientX - initialX;
-        let velocityY = e.clientY - initialY;
+    isDown = false;
 
-        let finalX = currentDart.offsetLeft + velocityX;
-        let finalY = currentDart.offsetTop + velocityY;
+    let velocityX = e.clientX - initialX;
+    let velocityY = e.clientY - initialY;
 
+    let finalX = currentDart.offsetLeft + velocityX;
+    let finalY = currentDart.offsetTop + velocityY;
+
+    // Get the dartboard's position and size
+    let dartboard = document.querySelector('.dartboard');
+    let dartboardRect = dartboard.getBoundingClientRect();
+
+    // Compute the center of the dartboard
+    let dartboardCenterX = dartboardRect.left + dartboardRect.width / 2;
+    let dartboardCenterY = dartboardRect.top + dartboardRect.height / 2;
+
+    // Compute the distance from the dart's final position to the dartboard's center
+    let distance = Math.sqrt(Math.pow(finalX - dartboardCenterX, 2) + Math.pow(finalY - dartboardCenterY, 2));
+
+    // Define the radius around the dartboard's center where the dart can land
+    let landingRadius = dartboardRect.width / 2;
+
+    // If the dart's final position is within the allowed landing area, move it there and rotate it
+    // Otherwise, snap it back to its initial position
+    if (distance <= landingRadius) {
         currentDart.style.left = `${finalX}px`;
         currentDart.style.top = `${finalY}px`;
+        currentDart.style.transform = 'rotate(0deg)';
+    } else {
+        currentDart.style.left = '50%';
+        currentDart.style.top = '50%';
+        currentDart.style.transform = 'rotate(-90deg)';
     }
-
+}
     darts.forEach((dart) => {
         dart.addEventListener('mousedown', function(e) {
             currentDart = this;

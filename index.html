@@ -88,9 +88,21 @@
             }
         }
 
-        function mouseUp() {
-            isDown = false;
-        }
+        function mouseUp(e) {
+    if (!isDown) return;
+    
+    isDown = false;
+
+    let velocityX = e.clientX - initialX;
+    let velocityY = e.clientY - initialY;
+
+    let finalX = currentDart.offsetLeft + velocityX;
+    let finalY = currentDart.offsetTop + velocityY;
+
+    currentDart.style.left = `${finalX}px`;
+    currentDart.style.top = `${finalY}px`;
+}
+
 
         darts.forEach((dart) => {
             dart.addEventListener('mousedown', function(e) {

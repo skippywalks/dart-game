@@ -1,116 +1,50 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100vh;
-            background-color: #272727;
-            padding: 0 20px;
-        }
-        .dartboard {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png') no-repeat center;
-            background-size: cover;
-        }
-        .darts-container {
-            position: relative;
-            width: 50%;
-        }
-        .dart {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 90px;
-            height: 150px;
-            background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png') no-repeat center;
-            background-size: contain;
-            transform: rotate(-90deg) translate(0, -50%);
-            transform-origin: bottom;
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-        .dart:nth-child(2) {
-            left: 45px;
-        }
-        .dart:nth-child(3) {
-            left: 90px;
-        }
-        #reset-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 10px;
-            background: red;
-            color: white;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <div class="darts-container">
-        <div class="dart">
-        </div>
-        <div class="dart">
-        </div>
-        <div class="dart">
-        </div>
-    </div>
-    <div class="dartboard">
-    </div>
-    <button id="reset-button">Reset</button>
-    <script>
-        const darts = Array.from(document.querySelectorAll('.dart'));
-
-        let initialMousePosition = null;
-        let draggedDart = null;
-
-        function prepareDartMove(event) {
-            initialMousePosition = {x: event.clientX, y: event.clientY};
-            draggedDart = event.target;
-            draggedDart.style.transition = 'none';
-        }
-
-        function moveDart(event) {
-            if (draggedDart && initialMousePosition) {
-                const dx = event.clientX - initialMousePosition.x;
-                const dy = event.clientY - initialMousePosition.y;
-                draggedDart.style.transform = `translate(${dx}px, ${dy}px) rotate(90deg)`;
-            }
-        }
-
-        function releaseDart(event) {
-            if (draggedDart) {
-                draggedDart.style.transition = 'transform 0.3s';
-                draggedDart.style.transform = 'translate(300%, -50%) rotate(90deg)';
-                draggedDart = null;
-                initialMousePosition = null;
-            }
-        }
-
-        darts.forEach((dart) => {
-            dart.addEventListener('mousedown', prepareDartMove);
-            dart.addEventListener('mousemove', moveDart);
-            dart.addEventListener('mouseup', releaseDart);
-        });
-    
-        // Prevent default dragging behavior
-        document.addEventListener('dragstart', function(event) {
-            event.preventDefault();
-        });
-
-        const resetButton = document.querySelector('#reset-button');
-        resetButton.addEventListener('click', () => {
-            darts.forEach((dart) => {
-                dart.style.transition = 'none';
-                dart.style.transform = 'rotate(-90deg) translate(0, -50%)';
-            });
-        });
-    </script>
-</body>
-</html>
+<style>
+    body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100vh;
+        background-color: #272727;
+        padding: 0 20px;
+    }
+    .dartboard {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png') no-repeat center;
+        background-size: cover;
+    }
+    .darts-container {
+        position: relative;
+        width: 50%;
+    }
+    .dart {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 90px;
+        height: 150px;
+        background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png') no-repeat center;
+        background-size: contain;
+        transform: rotate(-90deg) translate(0, -50%);
+        transform-origin: bottom;
+        transition: transform 0.3s;
+        cursor: pointer;
+    }
+    .dart:nth-child(2) {
+        left: 45px;
+    }
+    .dart:nth-child(3) {
+        left: 90px;
+    }
+    #reset-button {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+        background: red;
+        color: white;
+        cursor: pointer;
+    }
+</style>

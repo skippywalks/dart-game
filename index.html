@@ -8,7 +8,7 @@
             align-items: center;
             height: 100vh;
             background-color: #272727;
-            padding: 0 20px;
+            padding: 0 50px;
             margin: 0;
         }
         .dartboard {
@@ -44,7 +44,7 @@
         .reset-button {
             position: absolute;
             top: 20px;
-            left: 20px;
+            left: 50px;
             padding: 10px 20px;
             background-color: #ff0000;
             color: #ffffff;
@@ -102,7 +102,7 @@
 
         function resetDarts() {
             darts.forEach((dart, index) => {
-                dart.style.left = `${100 + 90 * index}px`;
+                dart.style.left = `${index * 90}px`;
                 dart.style.top = '50%';
             });
         }

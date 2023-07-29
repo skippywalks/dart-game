@@ -60,7 +60,7 @@
 
         function animateDartThrow(event) {
             const dart = event.target;
-            dart.style.transform = 'rotate(90deg)';
+            dart.style.transform = 'translateX(300px) rotate(90deg)';
             dart.removeEventListener('click', animateDartThrow);
         }
 
@@ -71,4 +71,8 @@
             });
         }
 
-        darts.forEach((dart) => dart.addEventListener('click', animateDart
+        darts.forEach((dart) => dart.addEventListener('click', animateDartThrow));
+        document.getElementById('reset').addEventListener('click', resetDarts);
+    </script>
+</body>
+</html>

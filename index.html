@@ -74,10 +74,15 @@
         let currentDart;
         let offset = [0, 0];
         let isDown = false;
+        let initialX, initialY; // Add these variables to keep track of initial mouse position
 
-        function mouseDown(e) {
-            isDown = true;
-            offset = [currentDart.offsetLeft - e.clientX, currentDart.offsetTop - e.clientY];
+function mouseDown(e) {
+    isDown = true;
+    initialX = e.clientX; // Record the initial mouse X position
+    initialY = e.clientY; // Record the initial mouse Y position
+    offset = [currentDart.offsetLeft - e.clientX, currentDart.offsetTop - e.clientY];
+}
+
         }
 
         function mouseMove(e) {

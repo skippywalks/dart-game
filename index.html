@@ -99,8 +99,8 @@
     let velocityX = e.clientX - initialX;
     let velocityY = e.clientY - initialY;
 
-    let finalX = currentDart.offsetLeft + velocityX;
-    let finalY = currentDart.offsetTop + velocityY;
+    let finalX = currentDart.getBoundingClientRect().left + velocityX;
+    let finalY = currentDart.getBoundingClientRect().top + velocityY;
 
     // Get the dartboard's position and size
     let dartboard = document.querySelector('.dartboard');
@@ -128,6 +128,7 @@
         currentDart.style.transform = 'rotate(-90deg)';
     }
 }
+
     darts.forEach((dart) => {
         dart.addEventListener('mousedown', function(e) {
             currentDart = this;

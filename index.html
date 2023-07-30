@@ -102,16 +102,16 @@
             if (currentDart) return;
             e.preventDefault();
             currentDart = this;
-            originalX = e.clientX;
-            originalY = e.clientY;
-            currentDart.style.transform = 'rotate(-45deg)';
+            originalX = resetButton.offsetLeft + resetButton.offsetWidth / 2;
+            originalY = e.clientY + this.getBoundingClientRect().height / 2;
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
             aimLine.style.display = 'block';
         }
 
         function dragEnd(e) {
             if (!currentDart) return;
             aimLine.style.display = 'none';
-            currentDart.style.transform = 'rotate(-45deg)';
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
 
             flightStartTime = Date.now();
             let dx = e.clientX - originalX;
@@ -131,7 +131,7 @@
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             aimLine.style.width = (distance * 0.7) + 'px';
-            aimLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+            aimLine.style.transform = `translate(${originalX}px, ${originalY}px)`;
         }
 
         function fly() {
@@ -156,7 +156,7 @@
 
         function resetDarts() {
             darts.forEach((dart) => {
-                dart.style.transform = 'rotate(-90deg)';
+                dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
                 dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
             });
             currentDart = null;

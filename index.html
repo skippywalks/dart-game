@@ -103,10 +103,10 @@
     });
 
     function resetDarts() {
-        darts.forEach((dart) => {
-            dart.style.transform = 'translate(0, 0)';
-        });
-    }
+    darts.forEach((dart) => {
+        dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
+    });
+}
 
     resetButton.addEventListener('click', resetDarts);
 </script>

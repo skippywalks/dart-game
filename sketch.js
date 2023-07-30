@@ -47,7 +47,7 @@ function mouseDragged() {
 
 function mouseReleased() {
   if (draggingChicken) {
-    draggingChicken.fly();
+    draggingChicken.fly(draggingChicken.vx, draggingChicken.vy);
     draggingChicken = null;
   }
 }
@@ -100,11 +100,11 @@ class Chicken {
     }
   }
 
-  fly() {
+  fly(vx, vy) {
     if (this.dragging) {
       this.isFlying = true;
-      this.vx = (this.x - mouseX) * 0.5;
-      this.vy = (this.y - mouseY) * 0.5;
+      this.vx = vx;
+      this.vy = vy;
     }
     this.dragging = false;
   }

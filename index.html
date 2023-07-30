@@ -136,10 +136,10 @@
         function fly() {
             let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
             let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
-            newY += 0.005 * (Date.now() - flightStartTime);
+            newY -= 0.005 * (Date.now() - flightStartTime);  // Inverting the gravity direction.
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
 
-            if (newY <= window.innerHeight && newX >= 0) {
+            if (newY >= 0 && newX >= 0) {
                 requestAnimationFrame(fly);
             } else {
                 currentDart = null;
@@ -165,4 +165,3 @@
     </script>
 </body>
 </html>
-

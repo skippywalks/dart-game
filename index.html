@@ -93,7 +93,6 @@
         const dartboardRect = dartboard.getBoundingClientRect();
         const dartboardCenterX = dartboardRect.left + dartboardRect.width / 2;
         const dartboardCenterY = dartboardRect.top + dartboardRect.height / 2;
-        const dartboardRadius = dartboardRect.width / 2;
 
         let currentDart;
         let originalX, originalY;
@@ -104,28 +103,44 @@
         });
 
         function dragStart(e) {
-            currentDart = e.target;
+            if (currentDart) return;
+            e.preventDefault();
+            currentDart = this;
             originalX = e.clientX;
             originalY = e.clientY;
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
             aimLine.style.display = 'block';
         }
 
         function dragEnd(e) {
             if (!currentDart) return;
-            let dx = e.clientX - originalX;
-            let dy = e.clientY - originalY;
-            currentDart.direction = Math.atan2(dy, dx);
-            speed = Math.hypot(dx, dy) / 2000;
+            aimLine.style.display = 'none';
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
+
             flightStartTime = Date.now();
+            let dx = e.clientX - originalX;
+            let dy = originalY - e.clientY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            speed = distance * 0.005;
+
+            let directionX = dartboardCenterX - originalX;
+            let directionY = dartboardCenterY - originalY;
+            let directionAngle = Math.atan2(directionY, directionX);
+            currentDart.direction = directionAngle;
+
             requestAnimationFrame(fly);
         }
 
         function drag(e) {
             if (!currentDart) return;
+            e.preventDefault();
+
             let dx = e.clientX - originalX;
-            let dy = e.clientY - originalY;
-            let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-            aimLine.style.transform = `rotate(${angle}deg)`;
+            let dy = originalY - e.clientY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            aimLine.style.width = (distance * 0.7) + 'px';
+            aimLine.style.transform = `translate(${originalX}px, ${originalY}px)`;
         }
 
         function fly() {
@@ -134,11 +149,7 @@
             let newY = currentDart.originalPosition.y + Math.sin(currentDart.direction) * elapsed;
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(${currentDart.direction}rad)`;
 
-            let dx = newX - dartboardCenterX;
-            let dy = newY - dartboardCenterY;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > dartboardRadius) {
+            if (newX <= dartboardCenterX && newY <= dartboardCenterY) {
                 requestAnimationFrame(fly);
             } else {
                 currentDart = null;

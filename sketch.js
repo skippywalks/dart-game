@@ -1,4 +1,15 @@
 let chickenImg, dartboardImg;
+let chickens = [];
+let dartboard;
+let resetButton;
+const numOfChickens = 3;
+const chickenWidth = 50;
+const chickenHeight = 75;
+
+function preload() {
+  chickenImg = loadImage('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png');
+  dartboardImg = loadImage('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png');
+}
 
 class Chicken {
   constructor(x, y) {
@@ -13,13 +24,13 @@ class Chicken {
   }
 
   display() {
-    image(chickenImg, this.x, this.y, 90, 150);
+    image(chickenImg, this.x, this.y, chickenWidth, chickenHeight);
   }
 
   drag(mx, my) {
     if (this.isFlying) return;
     let d = dist(mx, my, this.x, this.y);
-    if (d < 45) {
+    if (d < chickenWidth / 2) {
       this.dragging = true;
       this.offsetX = this.x - mx;
       this.offsetY = this.y - my;
@@ -64,28 +75,16 @@ class Dartboard {
   }
 }
 
-let chickens = [];
-let dartboard;
-let resetButton;
-const numOfChickens = 3;
-
-function preload() {
-  chickenImg = loadImage('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png');
-  dartboardImg = loadImage('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png');
-}
-
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  imageMode(CENTER);
+  createCanvas(windowWidth * 0.8, windowHeight * 0.8);
   resetButton = createButton('Reset');
   resetButton.position(20, 20);
   resetButton.mousePressed(resetGame);
   resetButton.id('resetButton');
   for (let i = 0; i < numOfChickens; i++) {
-    // Distribute the chickens evenly along the height
-    chickens[i] = new Chicken(100, (i + 1) * (height / (numOfChickens + 1)));
+    chickens[i] = new Chicken(width / 4, (i * (chickenHeight + 20)) + chickenHeight);
   }
-  dartboard = new Dartboard(width - 200, height / 2, 150);
+  dartboard = new Dartboard(width * 0.8, height / 2, 150);
 }
 
 function draw() {
@@ -102,7 +101,7 @@ function draw() {
 
 function mouseDragged() {
   for (let chicken of chickens) {
-    chicken.drag(mouseX, mouseY);
+    chicken.drag(mx, my);
   }
 }
 
@@ -115,8 +114,7 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    // Distribute the chickens evenly along the height
-    chickens[i] = new Chicken(100, (i + 1) * (height / (numOfChickens + 1)));
+    chickens[i] = new Chicken(width / 4, (i * (chickenHeight + 20)) + chickenHeight);
   }
   loop();
 }

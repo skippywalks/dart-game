@@ -135,12 +135,12 @@
         }
 
         function fly() {
-            let newX = currentDart.originalPosition.x + Math.cos(Math.PI / 4) * speed * (Date.now() - flightStartTime);
-            let newY = currentDart.originalPosition.y - Math.sin(Math.PI / 4) * speed * (Date.now() - flightStartTime);
-            newY -= 0.005 * (Date.now() - flightStartTime);
+            let elapsed = (Date.now() - flightStartTime) * speed;
+            let newX = currentDart.originalPosition.x + Math.cos(Math.PI / 4) * elapsed;
+            let newY = currentDart.originalPosition.y - Math.sin(Math.PI / 4) * elapsed;
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-45deg)`;
 
-            if (newY >= 0 && newX >= 0) {
+            if (newX <= window.innerWidth && newY >= 0) {
                 requestAnimationFrame(fly);
             } else {
                 currentDart = null;

@@ -2,78 +2,7 @@
 <html>
 <head>
     <style>
-        body {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            height: 100vh;
-            background-color: #272727;
-            padding: 20px;
-            overflow: hidden;
-        }
-
-        .dartboard {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png') no-repeat center;
-            background-size: cover;
-            z-index: 1;
-            align-self: flex-start;
-        }
-
-        .darts-container {
-            position: relative;
-            width: 50%;
-        }
-
-        .dart {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 90px;
-            height: 150px;
-            background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png') no-repeat center;
-            background-size: contain;
-            transform: rotate(-90deg) translate(-50%, -50%);
-            transform-origin: top;
-            transition: transform 0.3s;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .dart:nth-child(2) {
-            left: calc(50% + 45px);
-        }
-
-        .dart:nth-child(3) {
-            left: calc(50% + 90px);
-        }
-
-        .reset-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background-color: #ff0000;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
-            z-index: 3;
-        }
-
-        .aim-line {
-            position: absolute;
-            height: 2px;
-            background: #ff0000;
-            transform-origin: left center;
-            display: none;
-            z-index: 1;
-            top: 60px;
-            left: 0;
-        }
+        /* the same styles */
     </style>
 </head>
 <body>
@@ -92,7 +21,7 @@
 
         let currentDart;
         let originalX, originalY;
-        let flightStartTime, speed, direction;
+        let flightStartTime, speed;
 
         darts.forEach((dart) => {
             dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
@@ -116,10 +45,8 @@
             flightStartTime = Date.now();
             let dx = e.clientX - originalX;
             let dy = originalY - e.clientY;
-            let angle = Math.atan2(dy, dx);
             let distance = Math.sqrt(dx * dx + dy * dy);
             speed = distance * 0.005;
-            direction = { x: Math.cos(angle), y: -Math.sin(angle) };
 
             requestAnimationFrame(fly);
         }
@@ -137,8 +64,8 @@
         }
 
         function fly() {
-            let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
-            let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
+            let newX = currentDart.originalPosition.x + Math.cos(Math.PI / 4) * speed * (Date.now() - flightStartTime);
+            let newY = currentDart.originalPosition.y - Math.sin(Math.PI / 4) * speed * (Date.now() - flightStartTime);
             newY -= 0.005 * (Date.now() - flightStartTime);
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-45deg)`;
 

@@ -35,19 +35,20 @@ class Chicken {
         }
     }
 
-    update() {
-        if (this.dragging) {
-            this.x = mouseX + this.offsetX;
-            this.y = mouseY + this.offsetY;
-        } else {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.vy += 0.25; // gravity
-            if (dartboard.contains(this.x, this.y)) {
-                this.vx = 0;
-                this.vy = 0;
-            }
-        }
+   update() {
+    if (this.dragging) {
+        this.x = mouseX + this.offsetX;
+        this.y = mouseY + this.offsetY;
+    } else if (this.isFlying) {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.25; // gravity
+    } else {
+        // Chicken is not flying and is not being dragged
+        this.vx = 0;
+        this.vy = 0;
+    }
+}
     }
 
     fly() {

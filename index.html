@@ -87,15 +87,19 @@
         const aimLine = document.querySelector('.aim-line');
 
         let currentDart;
-        let startX, startY, originalX, originalY;
+        let originalX, originalY;
         let flightStartTime, speed, direction;
+
+        darts.forEach((dart) => {
+            dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
+        });
 
         function dragStart(e) {
             if (currentDart) return;
             e.preventDefault();
             currentDart = this;
-            originalX = e.clientX - currentDart.getBoundingClientRect().left;
-            originalY = e.clientY - currentDart.getBoundingClientRect().top;
+            originalX = e.clientX;
+            originalY = e.clientY;
             aimLine.style.display = 'block';
         }
 
@@ -123,13 +127,13 @@
             let angle = Math.atan2(dy, dx);
             let distance = Math.sqrt(dx * dx + dy * dy);
 
-            aimLine.style.width = (distance * 0.7) + 'px'; // shortening aim line
+            aimLine.style.width = (distance * 0.7) + 'px';
             aimLine.style.transform = `translate(${originalX}px, ${originalY}px) rotate(${angle}rad)`;
         }
 
         function fly() {
-            let newX = originalX + direction.x * speed * (Date.now() - flightStartTime);
-            let newY = originalY - direction.y * speed * (Date.now() - flightStartTime);
+            let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
+            let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
             newY += 0.005 * (Date.now() - flightStartTime);
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
 
@@ -150,6 +154,7 @@
         function resetDarts() {
             darts.forEach((dart) => {
                 dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
+                dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
             });
             currentDart = null;
         }
@@ -158,4 +163,3 @@
     </script>
 </body>
 </html>
-

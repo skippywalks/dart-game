@@ -100,14 +100,14 @@
             currentDart = this;
             originalX = e.clientX;
             originalY = e.clientY + this.getBoundingClientRect().height / 2;
-            currentDart.style.transform = 'rotate(0deg) translate(-50%, -50%)';
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
             aimLine.style.display = 'block';
         }
 
         function dragEnd(e) {
             if (!currentDart) return;
             aimLine.style.display = 'none';
-            currentDart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
 
             flightStartTime = Date.now();
             let dx = e.clientX - originalX;
@@ -137,7 +137,7 @@
             let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
             let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
             newY -= 0.005 * (Date.now() - flightStartTime);  // Inverting the gravity direction.
-            currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
+            currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-45deg)`;
 
             if (newY >= 0 && newX >= 0) {
                 requestAnimationFrame(fly);

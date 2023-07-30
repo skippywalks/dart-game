@@ -1,12 +1,68 @@
 let chickenImg, dartboardImg;
 let chickens = [];
 let dartboard;
+let draggingChicken = null;
+let dartboardRadius = 150;
 let resetButton;
 const numOfChickens = 3;
 
 function preload() {
-    chickenImg = loadImage('assets/chicken.png');
-    dartboardImg = loadImage('assets/dartboard.png');
+  chickenImg = loadImage('assets/chicken.png');
+  dartboardImg = loadImage('assets/dartboard.png');
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  imageMode(CENTER);
+  resetButton = createButton('Reset');
+  resetButton.position(20, 20);
+  resetButton.mousePressed(resetGame);
+  resetButton.id('resetButton');
+  for (let i = 0; i < numOfChickens; i++) {
+    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
+  }
+  dartboard = new Dartboard(width - 200, 200, dartboardRadius);
+}
+
+function draw() {
+  background(100);
+  image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius * 2, dartboardRadius * 2);
+  for (let chicken of chickens) {
+    chicken.update();
+    chicken.display();
+    if (dartboard.contains(chicken.x, chicken.y)) {
+      noLoop();
+    }
+  }
+}
+
+function mousePressed() {
+  for (let chicken of chickens) {
+    if (dist(mouseX, mouseY, chicken.x, chicken.y) < 50) {
+      draggingChicken = chicken;
+    }
+  }
+}
+
+function mouseDragged() {
+  if (draggingChicken) {
+    draggingChicken.drag(mouseX, mouseY);
+  }
+}
+
+function mouseReleased() {
+  if (draggingChicken) {
+    draggingChicken.fly();
+    draggingChicken = null;
+  }
+}
+
+function resetGame() {
+  chickens = [];
+  for (let i = 0; i < numOfChickens; i++) {
+    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
+  }
+  loop();
 }
 
 class Chicken {
@@ -22,13 +78,13 @@ class Chicken {
   }
 
   display() {
-    image(chickenImg, this.x, this.y, 60, 100);
+    image(chickenImg, this.x, this.y, 50, 100);
   }
 
   drag(mx, my) {
     if (this.isFlying) return;
     let d = dist(mx, my, this.x, this.y);
-    if (d < 30) {
+    if (d < 50) {
       this.dragging = true;
       this.offsetX = this.x - mx;
       this.offsetY = this.y - my;
@@ -43,9 +99,6 @@ class Chicken {
       this.x += this.vx;
       this.y += this.vy;
       this.vy += 0.25; // gravity
-    } else {
-      this.vx = 0;
-      this.vy = 0;
     }
   }
 
@@ -66,56 +119,8 @@ class Dartboard {
     this.r = r;
   }
 
-  display() {
-    image(dartboardImg, this.x, this.y, this.r * 2, this.r * 2);
-  }
-
   contains(x, y) {
     let d = dist(this.x, this.y, x, y);
     return d < this.r;
   }
-}
-
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  resetButton = createButton('Reset');
-  resetButton.position(20, 20);
-  resetButton.mousePressed(resetGame);
-  resetButton.id('resetButton');
-  for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(windowWidth / 4, windowHeight - 100 * i);
-  }
-  dartboard = new Dartboard(windowWidth - 200, windowHeight / 4, 150);
-}
-
-function draw() {
-  background(100);
-  for (let chicken of chickens) {
-    chicken.update();
-    chicken.display();
-    if (dartboard.contains(chicken.x, chicken.y)) {
-      noLoop();
-    }
-  }
-  dartboard.display();
-}
-
-function mouseDragged() {
-  for (let chicken of chickens) {
-    chicken.drag(mouseX, mouseY);
-  }
-}
-
-function mouseReleased() {
-  for (let chicken of chickens) {
-    chicken.fly();
-  }
-}
-
-function resetGame() {
-  chickens = [];
-  for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(windowWidth / 4, windowHeight - 100 * i);
-  }
-  loop();
 }

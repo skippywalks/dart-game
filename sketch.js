@@ -1,53 +1,45 @@
-let chickenImg, dartboardImg;
-let chickens = [];
-let dartboard;
-let draggingChicken = null;
-let dartboardRadius = 150;
-
-function preload() {
-    chickenImg = loadImage('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580573/chicken_vzyhhn.png');
-    dartboardImg = loadImage('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png');
-}
+let darts = [];
+let resetButton;
 
 function setup() {
-    createCanvas(800, 600);
-    imageMode(CENTER);
+  createCanvas(windowWidth, windowHeight);
+  for (let i = 0; i < 3; i++) {
+    darts.push(new Dart(width / 4, height / 2 + i * 100));
+  }
+  dartboard = new Dartboard(3 * width / 4, height / 4, 300);
 
-    for(let i=0; i<3; i++) {
-        chickens.push({ x: width/4, y: height/2 + i*100, vx: 0, vy: 0 });
-    }
-
-    dartboard = { x: 3*width/4, y: height/2 };
+  // Create the reset button
+  resetButton = createButton('Reset');
+  resetButton.position(20, 20);
+  resetButton.mousePressed(resetGame);
 }
 
 function draw() {
-    background(0);
+  background(39, 39, 39);
+  dartboard.show();
 
-    image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius*2, dartboardRadius*2);
-
-    chickens.forEach(chicken => {
-        image(chickenImg, chicken.x, chicken.y, 90, 150);
-        chicken.x += chicken.vx;
-        chicken.y += chicken.vy;
-        if(dist(chicken.x, chicken.y, dartboard.x, dartboard.y) < dartboardRadius) {
-            chicken.vx = 0;
-            chicken.vy = 0;
-        }
-    });
+  for (let dart of darts) {
+    dart.show();
+    dart.update();
+    dart.collide(dartboard);
+  }
 }
 
 function mousePressed() {
-    chickens.forEach(chicken => {
-        if(dist(mouseX, mouseY, chicken.x, chicken.y) < 50) {
-            draggingChicken = chicken;
-        }
-    });
+  for (let dart of darts) {
+    dart.clicked(mouseX, mouseY);
+  }
 }
 
 function mouseReleased() {
-    if(draggingChicken) {
-        draggingChicken.vx = (draggingChicken.x - mouseX) / 20;
-        draggingChicken.vy = (draggingChicken.y - mouseY) / 20;
-        draggingChicken = null;
-    }
+  for (let dart of darts) {
+    dart.stopDragging();
+  }
+}
+
+// The function that resets the game
+function resetGame() {
+  for (let i = 0; i < darts.length; i++) {
+    darts[i] = new Dart(width / 4, height / 2 + i * 100);
+  }
 }

@@ -73,7 +73,7 @@ class Chicken {
   }
 
   display() {
-    image(chickenImg, this.x, this.y, 50, 100);
+    image(chickenImg, this.x, this.y, 50, 150);
   }
 
   drag(mx, my) {

@@ -75,6 +75,7 @@
     <script>
         const darts = Array.from(document.querySelectorAll('.dart'));
         const resetButton = document.querySelector('.reset-button');
+        const dartboard = document.querySelector('.dartboard');
 
         let currentDart;
         let startX, startY, originalX, originalY;
@@ -99,22 +100,23 @@
             if (!currentDart) return;
             e.preventDefault();
 
-            // Define the flight direction and speed
-            let direction = {
-                x: 1,  // Positive x direction (right)
-                y: -0.5  // Negative y direction (up initially)
-            };
-            let speed = 900;  // Speed of the chicken, you can adjust this value as per your requirement
+            // Dartboard center
+            const dartboardCenterX = dartboard.getBoundingClientRect().left + dartboard.offsetWidth / 2;
+            const dartboardCenterY = dartboard.getBoundingClientRect().top + dartboard.offsetHeight / 2;
 
-            // Apply the direction and speed to the chicken
-            let newX = direction.x * speed;
-            let newY = direction.y * speed;
+            // Distance to the dartboard
+            const dx = dartboardCenterX - e.clientX;
+            const dy = dartboardCenterY - e.clientY;
 
-            // Add a downward force over time to create the arch effect
-            let time = (Date.now() - flightStartTime) / 1000;  // Time elapsed since the start of the flight
-            newY += 0.01 * Math.sin(time);  // Add a sine wave to the y movement
+            // Translate the chickens towards the dartboard center until they reach it
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const maxDistance = Math.sqrt(window.innerWidth * window.innerWidth + window.innerHeight * window.innerHeight);
+            const progress = Math.min(1, distance / maxDistance);
 
-            currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
+            const translateX = progress * dx;
+            const translateY = progress * dy;
+
+            currentDart.style.transform = `translate(${translateX}px, ${translateY}px) rotate(-45deg)`;
         }
 
         darts.forEach((dart) => {

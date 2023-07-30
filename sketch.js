@@ -11,8 +11,8 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(windowWidth * 0.8, windowHeight * 0.8);
-  canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.position(0, 0);
   canvas.style('position', 'fixed'); // This line changes the canvas position to 'fixed'
 
   dartboard = new Dartboard(width - 200, 100, 150);

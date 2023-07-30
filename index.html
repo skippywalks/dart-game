@@ -79,7 +79,7 @@
 
         let currentDart;
         let startX, startY, originalX, originalY;
-        let flightStartTime;
+        let flightStartTime, maxDistance;
 
         function dragStart(e) {
             e.preventDefault();
@@ -90,6 +90,13 @@
 
             startX = e.clientX;
             startY = e.clientY;
+
+            // Calculate max distance at the start of the drag
+            const dartboardCenterX = dartboard.getBoundingClientRect().left + dartboard.offsetWidth / 2;
+            const dartboardCenterY = dartboard.getBoundingClientRect().top + dartboard.offsetHeight / 2;
+            const dx = dartboardCenterX - startX;
+            const dy = dartboardCenterY - startY;
+            maxDistance = Math.sqrt(dx * dx + dy * dy);
         }
 
         function dragEnd(e) {
@@ -110,13 +117,15 @@
 
             // Translate the chickens towards the dartboard center until they reach it
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = Math.sqrt(window.innerWidth * window.innerWidth + window.innerHeight * window.innerHeight);
             const progress = Math.min(1, distance / maxDistance);
 
             const translateX = progress * dx;
             const translateY = progress * dy;
 
-            currentDart.style.transform = `translate(${translateX}px, ${translateY}px) rotate(-45deg)`;
+            // Don't let chickens move outside the dartboard
+            if (progress < 1) {
+                currentDart.style.transform = `translate(${translateX}px, ${translateY}px) rotate(-45deg)`;
+            }
         }
 
         darts.forEach((dart) => {

@@ -67,48 +67,50 @@
     </div>
     <div class="dartboard">
     </div>
-   <script>
-    const darts = Array.from(document.querySelectorAll('.dart'));
-    const resetButton = document.querySelector('.reset-button');
+    <script>
+        const darts = Array.from(document.querySelectorAll('.dart'));
+        const resetButton = document.querySelector('.reset-button');
 
-    let currentDart;
-    let startX, startY, originalX, originalY;
+        let currentDart;
+        let startX, startY, originalX, originalY;
 
-    function dragStart(e) {
-        e.preventDefault();
-        currentDart = this;
-        originalX = e.clientX - currentDart.getBoundingClientRect().left;
-        originalY = e.clientY - currentDart.getBoundingClientRect().top;
+        function dragStart(e) {
+            e.preventDefault();
+            currentDart = this;
+            originalX = e.clientX - currentDart.getBoundingClientRect().left;
+            originalY = e.clientY - currentDart.getBoundingClientRect().top;
 
-        startX = e.clientX;
-        startY = e.clientY;
-    }
+            startX = e.clientX;
+            startY = e.clientY;
+        }
 
-    function dragEnd(e) {
-        currentDart = null;
-    }
+        function dragEnd(e) {
+            currentDart = null;
+        }
 
-    function drag(e) {
-        if (!currentDart) return;
-        e.preventDefault();
-        let newX = e.clientX - startX;
-        let newY = e.clientY - startY;
-        currentDart.style.transform = `translate(${newX}px, ${newY}px)`;
-    }
+        function drag(e) {
+            if (!currentDart) return;
+            e.preventDefault();
+            let newX = e.clientX - startX;
+            let newY = e.clientY - startY;
+            currentDart.style.transform = `rotate(90deg) translate(${newX}px, ${newY}px)`;
+        }
 
-    darts.forEach((dart) => {
-        dart.addEventListener('mousedown', dragStart);
-        dart.addEventListener('mouseup', dragEnd);
-        dart.addEventListener('mousemove', drag);
-    });
+        darts.forEach((dart) => {
+            dart.addEventListener('mousedown', dragStart);
+        });
 
-    function resetDarts() {
-    darts.forEach((dart) => {
-        dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
-    });
-}
+        document.addEventListener('mouseup', dragEnd);
+        document.addEventListener('mousemove', drag);
 
-    resetButton.addEventListener('click', resetDarts);
-</script>
+        function resetDarts() {
+            darts.forEach((dart) => {
+                dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
+            });
+            currentDart = null;
+        }
+
+        resetButton.addEventListener('click', resetDarts);
+    </script>
 </body>
 </html>

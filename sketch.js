@@ -28,15 +28,12 @@ function draw() {
   for (let chicken of chickens) {
     chicken.update();
     chicken.display();
-    if (dartboard.contains(chicken.x, chicken.y) && chicken.isFlying) {
-      chicken.isFlying = false; // freeze the chicken
-    }
   }
 }
 
 function mousePressed() {
   for (let chicken of chickens) {
-    if (dist(mouseX, mouseY, chicken.x, chicken.y) < 50) {
+    if (dist(mouseX, mouseY, chicken.x, chicken.y) < 50 && !chicken.isFlying) {
       draggingChicken = chicken;
     }
   }
@@ -99,6 +96,9 @@ class Chicken {
       this.x += this.vx;
       this.y += this.vy;
       this.vy += 0.25; // gravity
+      if (dartboard.contains(this.x, this.y)) {
+        this.isFlying = false;
+      }
     }
   }
 

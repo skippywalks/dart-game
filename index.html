@@ -86,27 +86,27 @@
     <div class="dartboard"></div>
     <div class="aim-line"></div>
     <script>
-        const darts = Array.from(document.querySelectorAll('.dart'));
-        const resetButton = document.querySelector('.reset-button');
-        const aimLine = document.querySelector('.aim-line');
+    const darts = Array.from(document.querySelectorAll('.dart'));
+    const resetButton = document.querySelector('.reset-button');
+    const aimLine = document.querySelector('.aim-line');
 
-        let currentDart;
-        let originalX, originalY;
-        let flightStartTime, speed, direction;
+    let currentDart;
+    let originalX, originalY;
+    let flightStartTime, speed, direction;
 
-        darts.forEach((dart) => {
-            dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
-        });
+    darts.forEach((dart) => {
+        dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
+    });
 
-        function dragStart(e) {
-            if (currentDart) return;
-            e.preventDefault();
-            currentDart = this;
-            originalX = e.clientX;
-            originalY = e.clientY + this.getBoundingClientRect().height / 2;
-            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
-            aimLine.style.display = 'block';
-        }
+    function dragStart(e) {
+        if (currentDart) return;
+        e.preventDefault();
+        currentDart = this;
+        originalX = resetButton.offsetLeft + resetButton.offsetWidth / 2;  // update here
+        originalY = e.clientY + this.getBoundingClientRect().height / 2;
+        currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
+        aimLine.style.display = 'block';
+    }
 
         function dragEnd(e) {
             if (!currentDart) return;

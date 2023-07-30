@@ -55,7 +55,7 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
+    chickens[i] = new Chicken(width / 4, height - 50 - i * 50);
   }
   loop();
 }

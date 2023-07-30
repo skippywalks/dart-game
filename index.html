@@ -96,11 +96,8 @@
 
     isDown = false;
 
-    let velocityX = e.clientX - initialX;
-    let velocityY = e.clientY - initialY;
-
-    let finalX = currentDart.getBoundingClientRect().left + velocityX;
-    let finalY = currentDart.getBoundingClientRect().top + velocityY;
+    let finalX = e.clientX + offset[0];
+    let finalY = e.clientY + offset[1];
 
     // Get the dartboard's position and size
     let dartboard = document.querySelector('.dartboard');
@@ -110,8 +107,12 @@
     let dartboardCenterX = dartboardRect.left + dartboardRect.width / 2;
     let dartboardCenterY = dartboardRect.top + dartboardRect.height / 2;
 
+    // Compute the center of the dart's final position
+    let dartCenterX = finalX + currentDart.offsetWidth / 2;
+    let dartCenterY = finalY + currentDart.offsetHeight / 2;
+
     // Compute the distance from the dart's final position to the dartboard's center
-    let distance = Math.sqrt(Math.pow(finalX - dartboardCenterX, 2) + Math.pow(finalY - dartboardCenterY, 2));
+    let distance = Math.sqrt(Math.pow(dartCenterX - dartboardCenterX, 2) + Math.pow(dartCenterY - dartboardCenterY, 2));
 
     // Define the radius around the dartboard's center where the dart can land
     let landingRadius = dartboardRect.width / 2;
@@ -121,13 +122,14 @@
     if (distance <= landingRadius) {
         currentDart.style.left = `${finalX}px`;
         currentDart.style.top = `${finalY}px`;
-        currentDart.style.transform = 'rotate(0deg)';
+        currentDart.style.transform = 'rotate(90deg)';
     } else {
         currentDart.style.left = '50%';
         currentDart.style.top = '50%';
         currentDart.style.transform = 'rotate(-90deg)';
     }
 }
+
 
     darts.forEach((dart) => {
         dart.addEventListener('mousedown', function(e) {

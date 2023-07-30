@@ -96,24 +96,24 @@
     if (!currentDart) return;
     e.preventDefault();
 
-    // Calculate the direction towards the dartboard
-    let dartboardCenter = {
-        x: document.querySelector('.dartboard').offsetLeft + document.querySelector('.dartboard').offsetWidth / 2,
-        y: document.querySelector('.dartboard').offsetTop + document.querySelector('.dartboard').offsetHeight / 2
-    };
+    // Define the flight direction and speed
     let direction = {
-        x: dartboardCenter.x - e.clientX,
-        y: dartboardCenter.y - e.clientY
+        x: 1,  // Positive x direction (right)
+        y: -0.5  // Negative y direction (up)
     };
-    let magnitude = Math.sqrt(direction.x**2 + direction.y**2);
-    direction.x /= magnitude;
-    direction.y /= magnitude;
+    let speed = 300;  // Speed of the chicken
 
-    // Apply the direction to the chicken
-    let newX = direction.x * 250;  // Multiply by desired speed
-    let newY = direction.y * 250;  // Multiply by desired speed
+    // Apply the direction and speed to the chicken
+    let newX = direction.x * speed;
+    let newY = direction.y * speed;
+
+    // Add a downward force over time to create the arch effect
+    let time = Date.now() / 1000;  // Current time in seconds
+    newY += 100 * Math.sin(time);  // Add a sine wave to the y movement
+
     currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
 }
+
 
 
         darts.forEach((dart) => {

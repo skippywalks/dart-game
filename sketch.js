@@ -14,7 +14,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 100 - i * 50);
+    chickens[i] = new Chicken(width / 4, height - 50 - i * 50);
   }
   dartboard = new Dartboard(width - 200, 200, dartboardRadius);
 

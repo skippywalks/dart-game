@@ -104,15 +104,28 @@
         });
 
         function dragStart(e) {
-            /* ... same as before ... */
+            currentDart = e.target;
+            originalX = e.clientX;
+            originalY = e.clientY;
+            aimLine.style.display = 'block';
         }
 
         function dragEnd(e) {
-            /* ... same as before ... */
+            if (!currentDart) return;
+            let dx = e.clientX - originalX;
+            let dy = e.clientY - originalY;
+            currentDart.direction = Math.atan2(dy, dx);
+            speed = Math.hypot(dx, dy) / 2000;
+            flightStartTime = Date.now();
+            requestAnimationFrame(fly);
         }
 
         function drag(e) {
-            /* ... same as before ... */
+            if (!currentDart) return;
+            let dx = e.clientX - originalX;
+            let dy = e.clientY - originalY;
+            let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            aimLine.style.transform = `rotate(${angle}deg)`;
         }
 
         function fly() {

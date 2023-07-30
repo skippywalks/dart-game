@@ -83,6 +83,7 @@
     <div class="aim-line"></div>
     <script>
         const darts = Array.from(document.querySelectorAll('.dart'));
+        const dartboard = document.querySelector('.dartboard');
         const resetButton = document.querySelector('.reset-button');
         const aimLine = document.querySelector('.aim-line');
 
@@ -139,10 +140,10 @@
             newY += 0.005 * (Date.now() - flightStartTime);
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
 
-            if (newY <= window.innerHeight && newX >= 0) {
-                requestAnimationFrame(fly);
-            } else {
+            if (newX >= dartboard.offsetLeft && newX <= (dartboard.offsetLeft + dartboard.offsetWidth) && newY >= dartboard.offsetTop && newY <= (dartboard.offsetTop + dartboard.offsetHeight)) {
                 currentDart = null;
+            } else {
+                requestAnimationFrame(fly);
             }
         }
 

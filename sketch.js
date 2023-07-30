@@ -70,8 +70,6 @@ class Chicken {
     this.offsetY = 0;
     this.vx = 0;
     this.vy = 0;
-    this.lastMouseX = 0;
-    this.lastMouseY = 0;
   }
 
   display() {
@@ -85,10 +83,6 @@ class Chicken {
       this.dragging = true;
       this.offsetX = this.x - mx;
       this.offsetY = this.y - my;
-      this.vx = (this.x - this.lastMouseX) * 0.5;
-      this.vy = (this.y - this.lastMouseY) * 0.5;
-      this.lastMouseX = mx;
-      this.lastMouseY = my;
     }
   }
 
@@ -97,6 +91,8 @@ class Chicken {
       this.x = mouseX + this.offsetX;
       this.y = mouseY + this.offsetY;
     } else if (this.isFlying) {
+      this.vx = (this.x - mouseX) * 0.5;
+      this.vy = (this.y - mouseY) * 0.5;
       this.x += this.vx;
       this.y += this.vy;
       this.vy += 0.25; // gravity
@@ -109,6 +105,8 @@ class Chicken {
   fly() {
     if (this.dragging) {
       this.isFlying = true;
+      this.vx = (this.x - mouseX) * 0.5;
+      this.vy = (this.y - mouseY) * 0.5;
     }
     this.dragging = false;
   }

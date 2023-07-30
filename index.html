@@ -93,7 +93,8 @@
             e.preventDefault();
             let newX = e.clientX - startX;
             let newY = e.clientY - startY;
-            currentDart.style.transform = `rotate(90deg) translate(${newX}px, ${newY}px)`;
+            let centerAdjust = (window.innerWidth / 2) - startX;
+            currentDart.style.transform = `rotate(90deg) translate(${newX + centerAdjust}px, ${newY}px)`;
         }
 
         darts.forEach((dart) => {

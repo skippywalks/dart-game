@@ -3,30 +3,32 @@
 <head>
     <style>
         body {
-    display: flex;
-    flex-direction: row; /* changes flex direction to row */
-    justify-content: space-between; /* pushes children to far ends */
-    align-items: center; /* center items vertically */
-    height: 100vh;
-    background-color: #272727;
-    padding: 20px;
-    overflow: hidden; 
-}
+            display: flex;
+            flex-direction: row; /* changes flex direction to row */
+            justify-content: space-between; /* pushes children to far ends */
+            align-items: center; /* center items vertically */
+            height: 100vh;
+            background-color: #272727;
+            padding: 20px;
+            overflow: hidden; 
+        }
 
-.dartboard {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png') no-repeat center;
-    background-size: cover;
-    z-index: 1;
-    align-self: flex-start; /* aligns this item at the top */
-}
+        .dartboard {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: url('https://res.cloudinary.com/di2t8an4z/image/upload/v1690580079/dartboard_syzpbx.png') no-repeat center;
+            background-size: cover;
+            z-index: 1;
+            align-self: flex-start; /* aligns this item at the top */
+        }
+
         .darts-container {
             position: relative;
             width: 50%;
         }
+
         .dart {
             position: absolute;
             top: 50%;
@@ -41,12 +43,15 @@
             cursor: pointer;
             z-index: 2;
         }
+
         .dart:nth-child(2) {
             left: calc(50% + 45px);
         }
+
         .dart:nth-child(3) {
             left: calc(50% + 90px);
         }
+
         .reset-button {
             position: absolute;
             top: 20px;
@@ -62,27 +67,25 @@
 <body>
     <button class="reset-button">Reset</button>
     <div class="darts-container">
-        <div class="dart">
-        </div>
-        <div class="dart">
-        </div>
-        <div class="dart">
-        </div>
+        <div class="dart"></div>
+        <div class="dart"></div>
+        <div class="dart"></div>
     </div>
-    <div class="dartboard">
-    </div>
+    <div class="dartboard"></div>
     <script>
         const darts = Array.from(document.querySelectorAll('.dart'));
         const resetButton = document.querySelector('.reset-button');
 
         let currentDart;
         let startX, startY, originalX, originalY;
+        let flightStartTime;
 
         function dragStart(e) {
             e.preventDefault();
             currentDart = this;
             originalX = e.clientX - currentDart.getBoundingClientRect().left;
             originalY = e.clientY - currentDart.getBoundingClientRect().top;
+            flightStartTime = Date.now();  // Record the start time of the flight
 
             startX = e.clientX;
             startY = e.clientY;
@@ -93,28 +96,26 @@
         }
 
         function drag(e) {
-    if (!currentDart) return;
-    e.preventDefault();
+            if (!currentDart) return;
+            e.preventDefault();
 
-    // Define the flight direction and speed
-    let direction = {
-        x: 1,  // Positive x direction (right)
-        y: -0.5  // Negative y direction (up)
-    };
-    let speed = 300;  // Speed of the chicken
+            // Define the flight direction and speed
+            let direction = {
+                x: 1,  // Positive x direction (right)
+                y: -0.5  // Negative y direction (up initially)
+            };
+            let speed = 900;  // Speed of the chicken, you can adjust this value as per your requirement
 
-    // Apply the direction and speed to the chicken
-    let newX = direction.x * speed;
-    let newY = direction.y * speed;
+            // Apply the direction and speed to the chicken
+            let newX = direction.x * speed;
+            let newY = direction.y * speed;
 
-    // Add a downward force over time to create the arch effect
-    let time = Date.now() / 1000;  // Current time in seconds
-    newY += 100 * Math.sin(time);  // Add a sine wave to the y movement
+            // Add a downward force over time to create the arch effect
+            let time = (Date.now() - flightStartTime) / 1000;  // Time elapsed since the start of the flight
+            newY += 0.01 * Math.sin(time);  // Add a sine wave to the y movement
 
-    currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
-}
-
-
+            currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
+        }
 
         darts.forEach((dart) => {
             dart.addEventListener('mousedown', dragStart);

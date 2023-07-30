@@ -61,7 +61,7 @@
             color: #ffffff;
             border: none;
             cursor: pointer;
-            z-index: 1;
+            z-index: 3;
         }
 
         .aim-line {
@@ -70,7 +70,9 @@
             background: #ff0000;
             transform-origin: left center;
             display: none;
-            z-index: 2;
+            z-index: 1;
+            top: 60px;
+            left: 0;
         }
     </style>
 </head>
@@ -132,7 +134,7 @@
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             aimLine.style.width = (distance * 0.7) + 'px';
-            aimLine.style.transform = `translate(${originalX}px, ${originalY}px) rotate(${angle}rad)`;
+            aimLine.style.transform = `rotate(${angle}rad)`;
         }
 
         function fly() {

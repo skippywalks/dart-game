@@ -3,8 +3,8 @@ let chickens = [];
 let dartboard;
 let draggingChicken = null;
 let dartboardRadius = 150;
-const numOfChickens = 3;
 let resetButton;
+const numOfChickens = 3;
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
@@ -12,19 +12,21 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(windowWidth * 0.8, windowHeight * 0.8);
-  canvas.parent("canvas-container");
-  dartboard = new Dartboard(width - dartboardRadius - 50, height / 2, dartboardRadius);
-  for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(100, height - (i+1)*100, chickenImg);
-  }
-  resetButton = select('#resetButton');
+  createCanvas(windowWidth, windowHeight);
+  imageMode(CENTER);
+  resetButton = createButton('Reset');
+  resetButton.position(20, 20);
   resetButton.mousePressed(resetGame);
+  resetButton.id('resetButton');
+  for (let i = 0; i < numOfChickens; i++) {
+    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
+  }
+  dartboard = new Dartboard(width - 200, 200, dartboardRadius);
 }
 
 function draw() {
   background(100);
-  image(dartboardImg, dartboard.x - dartboardRadius, dartboard.y - dartboardRadius, dartboardRadius * 2, dartboardRadius * 2);
+  image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius * 2, dartboardRadius * 2);
   for (let chicken of chickens) {
     chicken.update();
     chicken.display();
@@ -58,16 +60,15 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(100, height - (i+1)*100, chickenImg);
+    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
   }
   loop();
 }
 
 class Chicken {
-  constructor(x, y, img) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.img = img;
     this.isFlying = false;
     this.dragging = false;
     this.offsetX = 0;
@@ -77,7 +78,7 @@ class Chicken {
   }
 
   display() {
-    image(this.img, this.x, this.y, 50, 100);
+    image(chickenImg, this.x, this.y, 50, 100);
   }
 
   drag(mx, my) {
@@ -104,8 +105,8 @@ class Chicken {
   fly() {
     if (this.dragging) {
       this.isFlying = true;
-      this.vx = (this.x - mouseX) * 0.05;
-      this.vy = (this.y - mouseY) * 0.05;
+      this.vx = (this.x - mouseX) * 0.5;
+      this.vy = (this.y - mouseY) * 0.5;
     }
     this.dragging = false;
   }

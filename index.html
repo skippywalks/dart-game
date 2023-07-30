@@ -86,27 +86,27 @@
     <div class="dartboard"></div>
     <div class="aim-line"></div>
     <script>
-    const darts = Array.from(document.querySelectorAll('.dart'));
-    const resetButton = document.querySelector('.reset-button');
-    const aimLine = document.querySelector('.aim-line');
+        const darts = Array.from(document.querySelectorAll('.dart'));
+        const resetButton = document.querySelector('.reset-button');
+        const aimLine = document.querySelector('.aim-line');
 
-    let currentDart;
-    let originalX, originalY;
-    let flightStartTime, speed, direction;
+        let currentDart;
+        let originalX, originalY;
+        let flightStartTime, speed, direction;
 
-    darts.forEach((dart) => {
-        dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
-    });
+        darts.forEach((dart) => {
+            dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
+        });
 
-    function dragStart(e) {
-        if (currentDart) return;
-        e.preventDefault();
-        currentDart = this;
-        originalX = resetButton.offsetLeft + resetButton.offsetWidth / 2;  // update here
-        originalY = e.clientY + this.getBoundingClientRect().height / 2;
-        currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
-        aimLine.style.display = 'block';
-    }
+        function dragStart(e) {
+            if (currentDart) return;
+            e.preventDefault();
+            currentDart = this;
+            originalX = resetButton.offsetLeft + resetButton.offsetWidth / 2;
+            originalY = e.clientY + this.getBoundingClientRect().height / 2;
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
+            aimLine.style.display = 'block';
+        }
 
         function dragEnd(e) {
             if (!currentDart) return;
@@ -125,22 +125,21 @@
         }
 
         function drag(e) {
-        if (!currentDart) return;
-        e.preventDefault();
+            if (!currentDart) return;
+            e.preventDefault();
 
-        let dx = e.clientX - originalX;
-        let dy = originalY - e.clientY;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+            let dx = e.clientX - originalX;
+            let dy = originalY - e.clientY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
 
-        aimLine.style.width = (distance * 0.7) + 'px';
-        aimLine.style.transform = `translate(${originalX}px, ${originalY}px)`;
-    }
+            aimLine.style.width = (distance * 0.7) + 'px';
+            aimLine.style.transform = `translate(${originalX}px, ${originalY}px)`;
         }
 
         function fly() {
             let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
             let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
-            newY -= 0.005 * (Date.now() - flightStartTime);  // Inverting the gravity direction.
+            newY -= 0.005 * (Date.now() - flightStartTime);
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-45deg)`;
 
             if (newY >= 0 && newX >= 0) {

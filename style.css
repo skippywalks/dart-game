@@ -4,7 +4,14 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #F5F5F5;
-    margin: 0; /* added this line */
+    margin: 0; /* Removes default body margin */
+    overflow: hidden; /* Prevents scrolling */
+}
+
+#canvas-container {
+    position: relative;
+    width: 80%; /* 80% of parent width */
+    height: 80%; /* 80% of parent height */
 }
 
 #resetButton {

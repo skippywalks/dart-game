@@ -91,8 +91,6 @@ class Chicken {
       this.x = mouseX + this.offsetX;
       this.y = mouseY + this.offsetY;
     } else if (this.isFlying) {
-      this.vx = (this.x - mouseX) * 0.5;
-      this.vy = (this.y - mouseY) * 0.5;
       this.x += this.vx;
       this.y += this.vy;
       this.vy += 0.25; // gravity

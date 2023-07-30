@@ -100,12 +100,14 @@
             currentDart = this;
             originalX = e.clientX;
             originalY = e.clientY - currentDart.offsetHeight;
+            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
             aimLine.style.display = 'block';
         }
 
         function dragEnd(e) {
             if (!currentDart) return;
             aimLine.style.display = 'none';
+            currentDart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
 
             flightStartTime = Date.now();
             let dx = e.clientX - originalX;

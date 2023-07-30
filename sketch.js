@@ -28,8 +28,8 @@ function draw() {
   for (let chicken of chickens) {
     chicken.update();
     chicken.display();
-    if (dartboard.contains(chicken.x, chicken.y)) {
-      noLoop();
+    if (dartboard.contains(chicken.x, chicken.y) && chicken.isFlying) {
+      chicken.isFlying = false; // freeze the chicken
     }
   }
 }
@@ -94,6 +94,8 @@ class Chicken {
       this.x = mouseX + this.offsetX;
       this.y = mouseY + this.offsetY;
     } else if (this.isFlying) {
+      this.vx = (this.x - mouseX) * 0.5;
+      this.vy = (this.y - mouseY) * 0.5;
       this.x += this.vx;
       this.y += this.vy;
       this.vy += 0.25; // gravity

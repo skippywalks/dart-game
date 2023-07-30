@@ -12,21 +12,17 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(windowWidth, windowHeight);
-  canvas.position(0, 0);
-  canvas.style('position', 'fixed'); // This line changes the canvas position to 'fixed'
-
-  dartboard = new Dartboard(width - 200, 100, 150);
-
-  for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 200, chickenImg);
-  }
-
+  createCanvas(windowWidth, windowHeight);
+  imageMode(CENTER);
   resetButton = createButton('Reset');
-  resetButton.mousePressed(resetGame);
   resetButton.position(20, 20);
+  resetButton.mousePressed(resetGame);
+  resetButton.id('resetButton');
+  for (let i = 0; i < numOfChickens; i++) {
+    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
+  }
+  dartboard = new Dartboard(width - 200, 200, dartboardRadius);
 }
-
 
 function draw() {
   background(100);

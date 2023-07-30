@@ -99,7 +99,7 @@
             e.preventDefault();
             currentDart = this;
             originalX = e.clientX;
-            originalY = e.clientY;
+            originalY = e.clientY - currentDart.offsetHeight;
             aimLine.style.display = 'block';
         }
 

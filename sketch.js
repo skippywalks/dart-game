@@ -13,13 +13,13 @@ class Chicken {
   }
 
   display() {
-    image(chickenImg, this.x, this.y, 50, 50);
+    image(chickenImg, this.x, this.y, 90, 150);
   }
 
   drag(mx, my) {
     if (this.isFlying) return;
     let d = dist(mx, my, this.x, this.y);
-    if (d < 25) {
+    if (d < 45) {
       this.dragging = true;
       this.offsetX = this.x - mx;
       this.offsetY = this.y - my;
@@ -82,7 +82,8 @@ function setup() {
   resetButton.mousePressed(resetGame);
   resetButton.id('resetButton');
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(random(width), height / 2);
+    // Distribute the chickens evenly along the height
+    chickens[i] = new Chicken(100, (i + 1) * (height / (numOfChickens + 1)));
   }
   dartboard = new Dartboard(width - 200, height / 2, 150);
 }
@@ -114,7 +115,8 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(random(width), height / 2);
+    // Distribute the chickens evenly along the height
+    chickens[i] = new Chicken(100, (i + 1) * (height / (numOfChickens + 1)));
   }
   loop();
 }

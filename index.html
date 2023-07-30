@@ -120,22 +120,25 @@
     e.preventDefault();
 
     // calculate the angle and distance to the cursor
-    let dx = e.clientX - window.innerWidth / 2;
-    let dy = window.innerHeight / 2 - e.clientY;
+    let dx = e.clientX - originalX;
+    let dy = originalY - e.clientY;  // The origin is now the top of the screen
     let angle = Math.atan2(dy, dx);
     let distance = Math.sqrt(dx * dx + dy * dy);
 
     // scale and rotate the aimLine
     aimLine.style.width = distance + 'px';
-    aimLine.style.transform = `translate(${window.innerWidth / 2}px, ${window.innerHeight / 2}px) rotate(${angle}rad)`;
+    aimLine.style.transform = `translate(${originalX}px, ${originalY}px) rotate(${angle}rad)`;
 
-    let speed = 0.01;
+    // change the speed and direction based on the aimLine
+    let speed = distance * 0.01;
     let direction = { x: Math.cos(angle), y: Math.sin(angle) };
+
     let newX = originalX + direction.x * speed * (Date.now() - flightStartTime);
     let newY = originalY - direction.y * speed * (Date.now() - flightStartTime);  // Notice the "-" sign here
     newY += 0.005 * (Date.now() - flightStartTime);
     currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
 }
+
 
 
         darts.forEach((dart) => {

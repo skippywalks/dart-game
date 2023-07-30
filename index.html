@@ -99,7 +99,7 @@
             e.preventDefault();
             currentDart = this;
             originalX = e.clientX;
-            originalY = e.clientY;
+            originalY = e.clientY + this.getBoundingClientRect().height / 2;
             currentDart.style.transform = 'rotate(0deg) translate(-50%, -50%)';
             aimLine.style.display = 'block';
         }
@@ -165,3 +165,4 @@
     </script>
 </body>
 </html>
+

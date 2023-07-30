@@ -92,7 +92,7 @@
 
         let currentDart;
         let originalX, originalY;
-        let flightStartTime, speed, direction;
+        let flightStartTime, speed;
 
         darts.forEach((dart) => {
             dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
@@ -102,8 +102,8 @@
             if (currentDart) return;
             e.preventDefault();
             currentDart = this;
-            originalX = this.getBoundingClientRect().left;
-            originalY = this.getBoundingClientRect().bottom;
+            originalX = resetButton.offsetLeft + resetButton.offsetWidth / 2;
+            originalY = e.clientY + this.getBoundingClientRect().height / 2;
             currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
             aimLine.style.display = 'block';
         }
@@ -116,10 +116,8 @@
             flightStartTime = Date.now();
             let dx = e.clientX - originalX;
             let dy = originalY - e.clientY;
-            let angle = Math.atan2(dy, dx);
             let distance = Math.sqrt(dx * dx + dy * dy);
             speed = distance * 0.005;
-            direction = { x: Math.cos(angle), y: -Math.sin(angle) };
 
             requestAnimationFrame(fly);
         }
@@ -133,16 +131,16 @@
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             aimLine.style.width = (distance * 0.7) + 'px';
-            aimLine.style.transform = `translate(${originalX}px, ${originalY}px) rotate(${Math.atan2(dy, dx)}rad)`;
+            aimLine.style.transform = `translate(${originalX}px, ${originalY}px)`;
         }
 
         function fly() {
-            let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
-            let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
-            newY -= 0.005 * (Date.now() - flightStartTime);
+            let elapsed = (Date.now() - flightStartTime) * speed;
+            let newX = currentDart.originalPosition.x + Math.cos(Math.PI / 4) * elapsed;
+            let newY = currentDart.originalPosition.y - Math.sin(Math.PI / 4) * elapsed;
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-45deg)`;
 
-            if (newY >= 0 && newX >= 0) {
+            if (newX <= window.innerWidth && newY >= 0) {
                 requestAnimationFrame(fly);
             } else {
                 currentDart = null;

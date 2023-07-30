@@ -14,9 +14,9 @@ function preload() {
 function setup() {
   let canvas = createCanvas(windowWidth * 0.8, windowHeight * 0.8);
   canvas.parent("canvas-container");
-  dartboard = new Dartboard(width - 200, 100, dartboardRadius);
+  dartboard = new Dartboard(width - dartboardRadius - 50, height / 2, dartboardRadius);
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 200, chickenImg);
+    chickens[i] = new Chicken(100, height - (i+1)*100, chickenImg);
   }
   resetButton = select('#resetButton');
   resetButton.mousePressed(resetGame);
@@ -24,7 +24,7 @@ function setup() {
 
 function draw() {
   background(100);
-  image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius * 2, dartboardRadius * 2);
+  image(dartboardImg, dartboard.x - dartboardRadius, dartboard.y - dartboardRadius, dartboardRadius * 2, dartboardRadius * 2);
   for (let chicken of chickens) {
     chicken.update();
     chicken.display();
@@ -58,7 +58,7 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 200, chickenImg);
+    chickens[i] = new Chicken(100, height - (i+1)*100, chickenImg);
   }
   loop();
 }
@@ -97,4 +97,29 @@ class Chicken {
     } else if (this.isFlying) {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.25; //
+      this.vy += 0.25; // gravity
+    }
+  }
+
+  fly() {
+    if (this.dragging) {
+      this.isFlying = true;
+      this.vx = (this.x - mouseX) * 0.05;
+      this.vy = (this.y - mouseY) * 0.05;
+    }
+    this.dragging = false;
+  }
+}
+
+class Dartboard {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+  }
+
+  contains(x, y) {
+    let d = dist(this.x, this.y, x, y);
+    return d < this.r;
+  }
+}

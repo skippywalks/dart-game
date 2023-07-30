@@ -79,6 +79,9 @@
         currentDart = this;
         originalX = e.clientX - currentDart.getBoundingClientRect().left;
         originalY = e.clientY - currentDart.getBoundingClientRect().top;
+
+        startX = e.clientX;
+        startY = e.clientY;
     }
 
     function dragEnd(e) {
@@ -88,9 +91,9 @@
     function drag(e) {
         if (!currentDart) return;
         e.preventDefault();
-        let newX = e.clientX - originalX;
-        let newY = e.clientY - originalY;
-        currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
+        let newX = e.clientX - startX;
+        let newY = e.clientY - startY;
+        currentDart.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     darts.forEach((dart) => {
@@ -101,12 +104,13 @@
 
     function resetDarts() {
         darts.forEach((dart) => {
-            dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
+            dart.style.transform = 'translate(0, 0)';
         });
     }
 
     resetButton.addEventListener('click', resetDarts);
 </script>
+
 
 
 </body>

@@ -146,10 +146,10 @@
         function fly() {
             let elapsed = (Date.now() - flightStartTime) * speed;
             let newX = currentDart.originalPosition.x + Math.cos(currentDart.direction) * elapsed;
-            let newY = currentDart.originalPosition.y - Math.sin(currentDart.direction) * elapsed;
+            let newY = currentDart.originalPosition.y + Math.sin(currentDart.direction) * elapsed;
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(${currentDart.direction}rad)`;
 
-            if (newX <= window.innerWidth && newY >= 0) {
+            if (newX <= dartboardCenterX && newY <= dartboardCenterY) {
                 requestAnimationFrame(fly);
             } else {
                 currentDart = null;

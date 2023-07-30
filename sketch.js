@@ -42,8 +42,6 @@ function mousePressed() {
 function mouseDragged() {
   if (draggingChicken) {
     draggingChicken.drag(mouseX, mouseY);
-    draggingChicken.vx = (draggingChicken.x - mouseX) * 0.5;
-    draggingChicken.vy = (draggingChicken.y - mouseY) * 0.5;
   }
 }
 
@@ -72,6 +70,8 @@ class Chicken {
     this.offsetY = 0;
     this.vx = 0;
     this.vy = 0;
+    this.lastMouseX = 0;
+    this.lastMouseY = 0;
   }
 
   display() {
@@ -85,6 +85,10 @@ class Chicken {
       this.dragging = true;
       this.offsetX = this.x - mx;
       this.offsetY = this.y - my;
+      this.vx = (this.x - this.lastMouseX) * 0.5;
+      this.vy = (this.y - this.lastMouseY) * 0.5;
+      this.lastMouseX = mx;
+      this.lastMouseY = my;
     }
   }
 

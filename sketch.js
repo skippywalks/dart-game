@@ -3,8 +3,8 @@ let chickens = [];
 let dartboard;
 let draggingChicken = null;
 let dartboardRadius = 150;
-let resetButton;
 const numOfChickens = 3;
+let resetButton;
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
@@ -12,21 +12,15 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(windowWidth, windowHeight);
-  canvas.position(0, 0);
-  canvas.style('position', 'fixed'); // This line changes the canvas position to 'fixed'
-
-  dartboard = new Dartboard(width - 200, 100, 150);
-
+  let canvas = createCanvas(windowWidth * 0.8, windowHeight * 0.8);
+  canvas.parent("canvas-container");
+  dartboard = new Dartboard(width - 200, 100, dartboardRadius);
   for (let i = 0; i < numOfChickens; i++) {
     chickens[i] = new Chicken(width / 4, height - 200, chickenImg);
   }
-
-  resetButton = createButton('Reset');
+  resetButton = select('#resetButton');
   resetButton.mousePressed(resetGame);
-  resetButton.position(20, 20);
 }
-
 
 function draw() {
   background(100);
@@ -64,15 +58,16 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
+    chickens[i] = new Chicken(width / 4, height - 200, chickenImg);
   }
   loop();
 }
 
 class Chicken {
-  constructor(x, y) {
+  constructor(x, y, img) {
     this.x = x;
     this.y = y;
+    this.img = img;
     this.isFlying = false;
     this.dragging = false;
     this.offsetX = 0;
@@ -82,7 +77,7 @@ class Chicken {
   }
 
   display() {
-    image(chickenImg, this.x, this.y, 50, 100);
+    image(this.img, this.x, this.y, 50, 100);
   }
 
   drag(mx, my) {
@@ -102,29 +97,4 @@ class Chicken {
     } else if (this.isFlying) {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.25; // gravity
-    }
-  }
-
-  fly() {
-    if (this.dragging) {
-      this.isFlying = true;
-      this.vx = (this.x - mouseX) * 0.5;
-      this.vy = (this.y - mouseY) * 0.5;
-    }
-    this.dragging = false;
-  }
-}
-
-class Dartboard {
-  constructor(x, y, r) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-  }
-
-  contains(x, y) {
-    let d = dist(this.x, this.y, x, y);
-    return d < this.r;
-  }
-}
+      this.vy += 0.25; //

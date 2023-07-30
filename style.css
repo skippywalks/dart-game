@@ -4,7 +4,10 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #F5F5F5;
-    margin: 0; /* added this line */
+}
+
+#canvas-container {
+    position: relative;
 }
 
 #resetButton {

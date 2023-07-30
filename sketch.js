@@ -3,7 +3,6 @@ let chickens = [];
 let dartboard;
 let draggingChicken = null;
 let dartboardRadius = 150;
-let resetButton;
 const numOfChickens = 3;
 
 function preload() {
@@ -14,14 +13,13 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
-  resetButton = createButton('Reset');
-  resetButton.position(20, 20);
-  resetButton.mousePressed(resetGame);
-  resetButton.id('resetButton');
   for (let i = 0; i < numOfChickens; i++) {
     chickens[i] = new Chicken(width / 4, height - 100 - i * 100);
   }
   dartboard = new Dartboard(width - 200, 200, dartboardRadius);
+
+  let resetButton = select('#resetButton');
+  resetButton.mousePressed(resetGame);
 }
 
 function draw() {

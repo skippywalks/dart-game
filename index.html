@@ -88,31 +88,26 @@
         const aimLine = document.querySelector('.aim-line');
 
         let currentDart;
-        let originalX, originalY;
+        let startX, startY, originalX, originalY;
         let flightStartTime, speed, direction;
-
-        darts.forEach((dart) => {
-            dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
-        });
 
         function dragStart(e) {
             if (currentDart) return;
             e.preventDefault();
             currentDart = this;
-            originalX = e.clientX;
-            originalY = e.clientY - currentDart.offsetHeight;
-            currentDart.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
+            startX = e.clientX;
+            startY = e.clientY - this.getBoundingClientRect().height;
             aimLine.style.display = 'block';
+            this.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
         }
 
         function dragEnd(e) {
             if (!currentDart) return;
             aimLine.style.display = 'none';
-            currentDart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
 
             flightStartTime = Date.now();
-            let dx = e.clientX - originalX;
-            let dy = originalY - e.clientY;
+            let dx = e.clientX - startX;
+            let dy = startY - e.clientY;
             let angle = Math.atan2(dy, dx);
             let distance = Math.sqrt(dx * dx + dy * dy);
             speed = distance * 0.005;
@@ -125,22 +120,22 @@
             if (!currentDart) return;
             e.preventDefault();
 
-            let dx = e.clientX - originalX;
-            let dy = originalY - e.clientY;
+            let dx = e.clientX - startX;
+            let dy = startY - e.clientY;
             let angle = Math.atan2(dy, dx);
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             aimLine.style.width = (distance * 0.7) + 'px';
-            aimLine.style.transform = `translate(${originalX}px, ${originalY}px) rotate(${angle}rad)`;
+            aimLine.style.transform = `translate(${startX}px, ${startY}px) rotate(${angle}rad)`;
         }
 
         function fly() {
-            let newX = currentDart.originalPosition.x + direction.x * speed * (Date.now() - flightStartTime);
-            let newY = currentDart.originalPosition.y - direction.y * speed * (Date.now() - flightStartTime);
+            let newX = direction.x * speed * (Date.now() - flightStartTime);
+            let newY = -direction.y * speed * (Date.now() - flightStartTime);
             newY += 0.005 * (Date.now() - flightStartTime);
             currentDart.style.transform = `translate(${newX}px, ${newY}px) rotate(-90deg)`;
 
-            if (newX >= dartboard.offsetLeft && newX <= (dartboard.offsetLeft + dartboard.offsetWidth) && newY >= dartboard.offsetTop && newY <= (dartboard.offsetTop + dartboard.offsetHeight)) {
+            if (newX + currentDart.getBoundingClientRect().left >= dartboard.getBoundingClientRect().left && newX + currentDart.getBoundingClientRect().left <= dartboard.getBoundingClientRect().right && newY + currentDart.getBoundingClientRect().top >= dartboard.getBoundingClientRect().top && newY + currentDart.getBoundingClientRect().top <= dartboard.getBoundingClientRect().bottom) {
                 currentDart = null;
             } else {
                 requestAnimationFrame(fly);
@@ -149,15 +144,13 @@
 
         darts.forEach((dart) => {
             dart.addEventListener('mousedown', dragStart);
+            dart.addEventListener('mouseup', dragEnd);
+            dart.addEventListener('mousemove', drag);
         });
-
-        document.addEventListener('mouseup', dragEnd);
-        document.addEventListener('mousemove', drag);
 
         function resetDarts() {
             darts.forEach((dart) => {
                 dart.style.transform = 'rotate(-90deg) translate(-50%, -50%)';
-                dart.originalPosition = { x: dart.offsetLeft, y: dart.offsetTop };
             });
             currentDart = null;
         }

@@ -1,45 +1,50 @@
-let darts = [];
+let chickens = [];
+let dartboard;
 let resetButton;
+const numOfChickens = 3;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  for (let i = 0; i < 3; i++) {
-    darts.push(new Dart(width / 4, height / 2 + i * 100));
-  }
-  dartboard = new Dartboard(3 * width / 4, height / 4, 300);
-
-  // Create the reset button
   resetButton = createButton('Reset');
   resetButton.position(20, 20);
   resetButton.mousePressed(resetGame);
+  resetButton.id('resetButton');
+  for (let i = 0; i < numOfChickens; i++) {
+    chickens[i] = new Chicken(random(width), height / 2);
+  }
+  dartboard = new Dartboard(width - 200, height / 2, 150);
 }
 
 function draw() {
-  background(39, 39, 39);
-  dartboard.show();
-
-  for (let dart of darts) {
-    dart.show();
-    dart.update();
-    dart.collide(dartboard);
+  background(100);
+  for (let chicken of chickens) {
+    chicken.update();
+    chicken.display();
+    if (dartboard.contains(chicken.x, chicken.y)) {
+      noLoop();
+    }
   }
+  dartboard.display();
 }
 
-function mousePressed() {
-  for (let dart of darts) {
-    dart.clicked(mouseX, mouseY);
+function mouseDragged() {
+  for (let chicken of chickens) {
+    chicken.drag(mouseX, mouseY);
   }
 }
 
 function mouseReleased() {
-  for (let dart of darts) {
-    dart.stopDragging();
+  for (let chicken of chickens) {
+    chicken.fly();
   }
 }
 
-// The function that resets the game
 function resetGame() {
-  for (let i = 0; i < darts.length; i++) {
-    darts[i] = new Dart(width / 4, height / 2 + i * 100);
+  chickens = [];
+  for (let i = 0; i < numOfChickens; i++) {
+    chickens[i] = new Chicken(random(width), height / 2);
   }
+  loop();
 }
+
+// ... rest of the Chicken and

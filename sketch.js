@@ -177,7 +177,7 @@ class Dartboard {
     let distance = dist(x, y, this.x, this.y);
 
     // Apply rotation offset
-    let rotationOffset = - PI / 2;
+    let rotationOffset = -PI / 2 + PI / 180;
     angle = angle - rotationOffset;
 
     if (angle < 0) {

@@ -113,27 +113,30 @@ class Chicken {
   }
 
   update() {
-    if (this.dragging) {
-      this.x = mouseX + this.offsetX;
-      this.y = mouseY + this.offsetY;
-    } else if (this.isFlying && !this.landed) {
-      this.x += this.vx;
-      this.y += this.vy;
-      this.vy += 0.25;
+  if (this.dragging) {
+    this.x = mouseX + this.offsetX;
+    this.y = mouseY + this.offsetY;
+  } else if (this.isFlying && !this.landed) {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy += 0.25;
 
-      if (dartboard.contains(this.x, this.y)) {
-        this.landing = true;
-      }
+    let spikeX = this.x + 50 * cos(this.rotation + PI / 2);
+    let spikeY = this.y - 50 * sin(this.rotation + PI / 2);
 
-      if (this.isFlying && !this.landed && dist(this.startX, this.startY, this.x, this.y) >= this.landDistance) {
-        this.landed = true;
-        this.vx = 0;
-        this.vy = 0;
-        this.score = dartboard.getScore(this.x, this.y);
-        console.log(`Chicken landed in: ${this.score}`);
-      }
+    if (dartboard.contains(spikeX, spikeY)) {
+      this.landing = true;
+    }
+
+    if (this.isFlying && !this.landed && dist(this.startX, this.startY, spikeX, spikeY) >= this.landDistance) {
+      this.landed = true;
+      this.vx = 0;
+      this.vy = 0;
+      this.score = dartboard.getScore(spikeX, spikeY);
+      console.log(`Chicken landed in: ${this.score}`);
     }
   }
+}
 
   fly() {
     if (this.dragging && !this.landed) {

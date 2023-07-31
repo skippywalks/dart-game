@@ -2,7 +2,7 @@ let chickenImg, dartboardImg;
 let chickens = [];
 let dartboard;
 let draggingChicken = null;
-let dartboardRadius = 300;
+let dartboardRadius = 200;
 const numOfChickens = 3;
 
 function preload() {
@@ -78,7 +78,7 @@ class Chicken {
     this.offsetY = 0;
     this.vx = 0;
     this.vy = 0;
-    this.strength = 0.3; 
+    this.strength = 0.4; 
     this.maxRange = 200; 
     this.landed = false;
     this.pullBackDist = 0;
@@ -159,7 +159,7 @@ class Dartboard {
   constructor(x, y, r) {
     this.x = x;
     this.y = y;
-    this.r = 300;
+    this.r = 200;
     this.segments = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
   }
 

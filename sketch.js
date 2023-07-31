@@ -125,8 +125,8 @@ class Chicken {
     let spikeY = this.y - 50 * sin(this.rotation + PI / 2);
 
     if (dartboard.contains(spikeX, spikeY)) {
-      this.landing = true;
-    }
+   this.landing = true;
+}
 
     if (this.isFlying && !this.landed && dist(this.startX, this.startY, spikeX, spikeY) >= this.landDistance) {
       this.landed = true;
@@ -171,25 +171,29 @@ class Dartboard {
   }
 
   getScore(x, y) {
-  let angle = atan2(y - this.y, x - this.x);
-  let distance = dist(x, y, this.x, this.y);
+  // Only proceed if the dart has landed on the board
+  if (this.contains(x, y)) {
+    let angle = atan2(y - this.y, x - this.x);
+    let distance = dist(x, y, this.x, this.y);
 
-  // Apply rotation offset
-  let rotationOffset = 43 * PI / 30;  // Increase offset
-  angle = angle - rotationOffset;
+    // Apply rotation offset
+    let rotationOffset = - PI / 2;
+    angle = angle - rotationOffset;
 
-  if (angle < 0) {
-    angle = TWO_PI + angle;
+    if (angle < 0) {
+      angle = TWO_PI + angle;
+    }
+
+    let segment = floor((angle / TWO_PI) * 20);
+    segment = segment % this.segments.length;
+    let score = this.segments[segment];
+    
+    //... other code remains the same
+    return score;
+  } else {
+    // If the dart didn't land on the board, return 0 or some other non-scoring value
+    return 0;
   }
-
-  let segment = floor((angle / TWO_PI) * this.segments.length);
-  
-  let score = this.segments[segment];
-  
-  //... other code remains the same
-  return score;
 }
-
-
 
 }

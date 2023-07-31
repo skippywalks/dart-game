@@ -78,7 +78,7 @@ class Chicken {
     this.offsetY = 0;
     this.vx = 0;
     this.vy = 0;
-    this.strength = 0.4; 
+    this.strength = 0.5; 
     this.maxRange = 200; 
     this.landed = false;
     this.pullBackDist = 0;

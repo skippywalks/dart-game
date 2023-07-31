@@ -171,31 +171,25 @@ class Dartboard {
   }
 
   getScore(x, y) {
-    let angle = atan2(y - this.y, x - this.x);
-    let distance = dist(x, y, this.x, this.y);
+  let angle = atan2(y - this.y, x - this.x);
+  let distance = dist(x, y, this.x, this.y);
 
-    if (angle < 0) {
-      angle = TWO_PI + angle;
-    }
+  // Apply rotation offset
+  let rotationOffset = 43 * PI / 30;  // Increase offset
+  angle = angle - rotationOffset;
 
-    let segment = floor((angle / TWO_PI) * this.segments.length);
-    
-    let score = this.segments[segment];
-    
-    if (distance < this.r * 0.15) {
-      score = 50;
-    } else if (distance < this.r * 0.3) {
-      score = 25;
-    } else if (distance < this.r * 0.5) {
-    } else if (distance < this.r * 0.55) {
-      score *= 3;
-    } else if (distance < this.r * 0.8) {
-    } else if (distance < this.r) {
-      score *= 2;
-    } else {
-      score = 0;
-    }
-    
-    return score;
+  if (angle < 0) {
+    angle = TWO_PI + angle;
   }
+
+  let segment = floor((angle / TWO_PI) * this.segments.length);
+  
+  let score = this.segments[segment];
+  
+  //... other code remains the same
+  return score;
+}
+
+
+
 }

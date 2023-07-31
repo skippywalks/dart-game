@@ -2,31 +2,32 @@ let chickenImg, dartboardImg;
 let chickens = [];
 let dartboard;
 let draggingChicken = null;
-let dartboardRadius = 150;
+let dartboardRadius = 300;
 const numOfChickens = 3;
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
-  dartboardImg = loadImage('assets/dartboard.png');
+  dartboardImg = loadImage('assets/dartboard.png'); 
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
-  
+
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 400 - i * 50);
-  }
-  
-  dartboard = new Dartboard(width - 200, 200, dartboardRadius);
-  
+  chickens[i] = new Chicken((width / 4) + i * 75, height - 400);
+}
+
+  dartboard = new Dartboard(width - dartboardRadius - 50, dartboardRadius + 50, dartboardRadius); 
+
   let resetButton = select('#resetButton');
   resetButton.mousePressed(resetGame);
 }
 
 function draw() {
   background(100);
-  image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius * 2, dartboardRadius * 2);
+  image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius * 2, dartboardRadius * 2); 
+
   for (let chicken of chickens) {
     chicken.update();
     chicken.display();
@@ -39,6 +40,7 @@ function draw() {
 function mousePressed() {
   for (let chicken of chickens) {
     if (dist(mouseX, mouseY, chicken.x, chicken.y) < 50 && !chicken.isFlying && !chicken.landed) {
+      chicken.rotate();
       draggingChicken = chicken;
     }
   }
@@ -60,7 +62,7 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken(width / 4, height - 400 - i * 50);
+    chickens[i] = new Chicken((width / 4) + i * 75, height - 400);
   }
 }
 
@@ -79,27 +81,23 @@ class Chicken {
     this.strength = 0.3; 
     this.maxRange = 200; 
     this.landed = false;
+    this.pullBackDist = 0;
+    this.landDistance = 0;
+    this.rotation = -PI / 2;
+    this.hasRotated = false; // The rotation flag
   }
 
   display() {
-    if (this.dragging) {
-      let pullBackDist = dist(this.startX, this.startY, this.x, this.y);
-      let lineColor = color(0, 255, 0);
-      if (pullBackDist > this.maxRange) {
-        lineColor = color(255, 0, 0);
-      }
-      stroke(lineColor);
-      line(this.startX, this.startY, this.x, this.y);
-    }
-    image(chickenImg, this.x, this.y, 100, 100);
+    push();
+    translate(this.x, this.y);
+    rotate(this.rotation);
+    image(chickenImg, 0, 0, 100, 100);
+    pop();
+
     if (this.landed) {
       fill(255);
       textSize(16);
-      try {
-        text(this.score, this.x, this.y);
-      } catch (err) {
-        console.log('Error displaying score:', err);
-      }
+      text(this.score, this.x, this.y);
     }
   }
 
@@ -110,6 +108,7 @@ class Chicken {
       this.dragging = true;
       this.offsetX = this.x - mx;
       this.offsetY = this.y - my;
+      this.pullBackDist = dist(mx, my, this.x, this.y);
     }
   }
 
@@ -120,25 +119,39 @@ class Chicken {
     } else if (this.isFlying && !this.landed) {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.25; // gravity
+      this.vy += 0.25;
+
       if (dartboard.contains(this.x, this.y)) {
+        this.landing = true;
+      }
+
+      if (this.isFlying && !this.landed && dist(this.startX, this.startY, this.x, this.y) >= this.landDistance) {
         this.landed = true;
-        this.vx = 0; // stop horizontal movement
-        this.vy = 0; // stop vertical movement
+        this.vx = 0;
+        this.vy = 0;
         this.score = dartboard.getScore(this.x, this.y);
         console.log(`Chicken landed in: ${this.score}`);
       }
     }
   }
 
-
   fly() {
     if (this.dragging && !this.landed) {
       this.isFlying = true;
       this.vx = (this.startX - this.x) * this.strength;
       this.vy = (this.startY - this.y) * this.strength;
+      this.vx *= this.pullBackDist / 200;
+      this.vy *= this.pullBackDist / 200;
+      this.landDistance = dist(this.startX, this.startY, dartboard.x, dartboard.y) + this.pullBackDist / 2;
     }
     this.dragging = false;
+  }
+
+  rotate() {
+    if (!this.hasRotated) {
+      this.rotation += PI / 4;
+      this.hasRotated = true;
+    }
   }
 }
 
@@ -146,40 +159,40 @@ class Dartboard {
   constructor(x, y, r) {
     this.x = x;
     this.y = y;
-    this.r = r;
-    this.scores = [6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 15, 10];
+    this.r = 300;
+    this.segments = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
   }
 
   contains(x, y) {
-    return dist(this.x, this.y, x, y) < this.r;
+    return dist(this.x, this.y, x, y) <= this.r;
   }
 
   getScore(x, y) {
-    let d = dist(this.x, this.y, x, y);
     let angle = atan2(y - this.y, x - this.x);
+    let distance = dist(x, y, this.x, this.y);
+
     if (angle < 0) {
-      angle += TWO_PI;
+      angle = TWO_PI + angle;
     }
-    let sector = floor(angle / (TWO_PI / 20));
 
-    let normalizedD = d / this.r;
-    let multiplier;
-
-    if (normalizedD <= 4 / this.r) {
-      multiplier = 50;
-    } else if (normalizedD <= 8 / this.r) {
-      multiplier = 25;
-    } else if (normalizedD <= 31.8 / this.r) {
-      multiplier = 2;
-    } else if (normalizedD <= 81 / this.r) {
-      multiplier = 1;
-    } else if (normalizedD <= 107 / this.r) {
-      multiplier = 3;
+    let segment = floor((angle / TWO_PI) * this.segments.length);
+    
+    let score = this.segments[segment];
+    
+    if (distance < this.r * 0.15) {
+      score = 50;
+    } else if (distance < this.r * 0.3) {
+      score = 25;
+    } else if (distance < this.r * 0.5) {
+    } else if (distance < this.r * 0.55) {
+      score *= 3;
+    } else if (distance < this.r * 0.8) {
+    } else if (distance < this.r) {
+      score *= 2;
     } else {
-      multiplier = 1;
+      score = 0;
     }
-
-    let baseScore = this.scores[sector];
-    return baseScore * multiplier;
+    
+    return score;
   }
 }

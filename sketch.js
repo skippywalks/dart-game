@@ -1,4 +1,4 @@
-let chickenImg, dartboardImg;
+let chickenImg, dartboardImg, scoringImg;
 let chickens = [];
 let dartboard;
 let draggingChicken = null;
@@ -7,7 +7,9 @@ const numOfChickens = 3;
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
-  dartboardImg = loadImage('assets/dartboard.png'); 
+  dartboardImg = loadImage('assets/dartboard.png'); // add this line
+  scoringImg = loadImage('assets/scoring.png');
+scoringImg.loadPixels();
 }
 
 function setup() {
@@ -26,7 +28,8 @@ function setup() {
 
 function draw() {
   background(100);
-  image(dartboardImg, dartboard.x, dartboard.y, dartboardRadius * 2, dartboardRadius * 2); 
+  
+  image(dartboardImg, dartboard.x, dartboard.y, dartboard.r*2, dartboard.r*2); // Display the dartboard image
 
   for (let chicken of chickens) {
     chicken.update();
@@ -84,7 +87,7 @@ class Chicken {
     this.pullBackDist = 0;
     this.landDistance = 0;
     this.rotation = -PI / 2;
-    this.hasRotated = false; // The rotation flag
+    this.hasRotated = false;
   }
 
   display() {
@@ -113,22 +116,22 @@ class Chicken {
   }
 
   update() {
-  if (this.dragging) {
-    this.x = mouseX + this.offsetX;
-    this.y = mouseY + this.offsetY;
-  } else if (this.isFlying && !this.landed) {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.vy += 0.25;
+    if (this.dragging) {
+      this.x = mouseX + this.offsetX;
+      this.y = mouseY + this.offsetY;
+    } else if (this.isFlying && !this.landed) {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.25;
 
-    let spikeX = this.x + 50 * cos(this.rotation + PI / 2);
-    let spikeY = this.y - 50 * sin(this.rotation + PI / 2);
+      let spikeX = this.x + 50 * cos(this.rotation + PI / 2);
+      let spikeY = this.y - 50 * sin(this.rotation + PI / 2);
 
-    if (dartboard.contains(spikeX, spikeY)) {
-   this.landing = true;
-}
+      if (dartboard.contains(spikeX, spikeY)) {
+        this.landing = true;
+      }
 
-    if (this.isFlying && !this.landed && dist(this.startX, this.startY, spikeX, spikeY) >= this.landDistance) {
+      if (this.isFlying && !this.landed && dist(this.startX, this.startY, spikeX, spikeY) >= this.landDistance) {
       this.landed = true;
       this.vx = 0;
       this.vy = 0;
@@ -136,7 +139,7 @@ class Chicken {
       console.log(`Chicken landed in: ${this.score}`);
     }
   }
-}
+  }
 
   fly() {
     if (this.dragging && !this.landed) {
@@ -162,7 +165,7 @@ class Dartboard {
   constructor(x, y, r) {
     this.x = x;
     this.y = y;
-    this.r = 200;
+    this.r = r;
     this.segments = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
   }
 
@@ -170,30 +173,38 @@ class Dartboard {
     return dist(this.x, this.y, x, y) <= this.r;
   }
 
-  getScore(x, y) {
-  // Only proceed if the dart has landed on the board
-  if (this.contains(x, y)) {
-    let angle = atan2(y - this.y, x - this.x);
-    let distance = dist(x, y, this.x, this.y);
+getScore(x, y) {
+    // Normalize the coordinates relative to the image
+    let normalizedX = map(x, this.x - this.r, this.x + this.r, 0, scoringImg.width);
+    let normalizedY = map(y, this.y - this.r, this.y + this.r, 0, scoringImg.height);
 
-    // Apply rotation offset
-    let rotationOffset = -PI / 2 + PI / 180;
-    angle = angle - rotationOffset;
+    // Get the pixel color from the scoring image
+    let c = scoringImg.get(normalizedX, normalizedY);
 
-    if (angle < 0) {
-      angle = TWO_PI + angle;
+    // Call getColorScore() with the color of the pixel
+    return this.getColorScore(c);
+  }
+
+  getColorScore(color) {
+    let r = red(color);
+    let g = green(color);
+    let b = blue(color);
+
+    if (r === 250 && g === 0 && b === 250) {
+      return 50; // Inner bullseye
+    } else if (r === 0 && g === 250 && b === 250) {
+      return 25; // Outer bullseye
+    } else if (r === 250 && g === 0 && b === 0) {
+      return 0; // Missed dartboard
+    } else {
+      if (r > 0 && g === 0 && b === 0) {
+        return r / 10; // Single
+      } else if (g > 0 && r === 0 && b === 0) {
+        return g / 10 * 2; // Double
+      } else if (b > 0 && r === 0 && g === 0) {
+        return b / 10 * 3; // Triple
+      } 
     }
-
-    let segment = floor((angle / TWO_PI) * 20);
-    segment = segment % this.segments.length;
-    let score = this.segments[segment];
-    
-    //... other code remains the same
-    return score;
-  } else {
-    // If the dart didn't land on the board, return 0 or some other non-scoring value
     return 0;
   }
-}
-
 }

@@ -10,13 +10,13 @@ let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/scori
 function preload() {
   // Replace with your own URLs
   let chickenURL = 'assets/chicken.png';
-  let scoringImg = loadImage(scoringURL);
   let dartboardURL = 'assets/dartboard.png';
   
   chickenImg = loadImage(chickenURL);
-  scoringImg = loadImage(scoringURL);
+  scoringImg = loadImage(scoringURL); // scoringURL is the jsDelivr URL
   dartboardImg = loadImage(dartboardURL);
 }
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);

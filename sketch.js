@@ -4,7 +4,6 @@ let dartboard;
 let draggingChicken = null;
 let dartboardRadius = 200;
 const numOfChickens = 3;
-let scoringImg;
 
 let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/scoring.png'; // The URL to your image on jsDelivr
 
@@ -178,6 +177,9 @@ class Dartboard {
 
   contains(x, y) {
     return dist(this.x, this.y, x, y) <= this.r;
+  }
+  display() {
+    image(dartboardImg, this.x, this.y, this.r*2, this.r*2);
   }
 
 getScore(x, y) {

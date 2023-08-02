@@ -23,7 +23,7 @@ function setup() {
   imageMode(CENTER);
 
   for (let i = 0; i < numOfChickens; i++) {
-  chickens[i] = new Chicken((width / 4) + i * 75, height - 400);
+  chickens[i] = new Chicken((width / 8) + i * 75, height - 400);
 }
 
   dartboard = new Dartboard(width - dartboardRadius - 50, dartboardRadius + 50, dartboardRadius); 
@@ -71,7 +71,7 @@ function mouseReleased() {
 function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
-    chickens[i] = new Chicken((width / 4) + i * 75, height - 400);
+    chickens[i] = new Chicken((width / 8) + i * 75, height - 400);
   }
 }
 

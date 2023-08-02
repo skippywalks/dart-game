@@ -9,7 +9,7 @@ function preload() {
   // Replace with your own URLs
   let chickenURL = 'https://static.wixstatic.com/media/89837a_c1d08275204347639c96382ac29ea559~mv2.png';
   let scoringURL = 'https://static.wixstatic.com/media/89837a_41cdf5889495459cb54c497f734debde~mv2.png';
-  let dartboardURL = 'https://static.wixstatic.com/media/89837a_c1d08275204347639c96382ac29ea559~mv2.png';
+  let dartboardURL = 'https://static.wixstatic.com/media/89837a_60bfd5b09624408488397960fcf05f10~mv2.png';
   
   chickenImg = loadImage(chickenURL);
   scoringImg = loadImage(scoringURL);

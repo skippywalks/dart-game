@@ -5,7 +5,7 @@ let draggingChicken = null;
 let dartboardRadius = 200;
 const numOfChickens = 3;
 
-let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/scoring.png'; // The URL to your image on jsDelivr
+let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/assets/scoring.png'; // The URL to your image on jsDelivr
 
 function preload() {
   // Replace with your own URLs

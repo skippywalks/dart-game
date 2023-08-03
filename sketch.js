@@ -6,12 +6,11 @@ let dartboardRadius = 200;
 const numOfChickens = 3;
 let wind = -.1; // Change this to the strength of wind you want
 
-let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/assets/scoring.png'; // The URL to your image on jsDelivr
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
   dartboardImg = loadImage('assets/dartboard.png'); // add this line
-  scoringImg = loadImage(scoringURL); // scoringURL is the jsDelivr URL
+  scoringImg = loadImage('assets/scoring.png');
 scoringImg.loadPixels();
 }
 

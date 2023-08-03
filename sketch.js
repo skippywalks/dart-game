@@ -4,19 +4,16 @@ let dartboard;
 let draggingChicken = null;
 let dartboardRadius = 200;
 const numOfChickens = 3;
+let wind = -.1; // Change this to the strength of wind you want
 
 let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/assets/scoring.png'; // The URL to your image on jsDelivr
 
 function preload() {
-  // Replace with your own URLs
-  let chickenURL = 'assets/chicken.png';
-  let dartboardURL = 'assets/dartboard.png';
-  
-  chickenImg = loadImage(chickenURL);
+  chickenImg = loadImage('assets/chicken.png');
+  dartboardImg = loadImage('assets/dartboard.png'); // add this line
   scoringImg = loadImage(scoringURL); // scoringURL is the jsDelivr URL
-  dartboardImg = loadImage(dartboardURL);
+scoringImg.loadPixels();
 }
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -87,7 +84,7 @@ class Chicken {
     this.offsetY = 0;
     this.vx = 0;
     this.vy = 0;
-    this.strength = 0.5; 
+    this.strength = 0.03; 
     this.maxRange = 200; 
     this.landed = false;
     this.pullBackDist = 0;
@@ -126,6 +123,7 @@ class Chicken {
       this.x = mouseX + this.offsetX;
       this.y = mouseY + this.offsetY;
     } else if (this.isFlying && !this.landed) {
+this.vx += wind; // Add wind
       this.x += this.vx;
       this.y += this.vy;
       this.vy += 0.25;
@@ -147,17 +145,40 @@ class Chicken {
   }
   }
 
-  fly() {
-    if (this.dragging && !this.landed) {
-      this.isFlying = true;
-      this.vx = (this.startX - this.x) * this.strength;
-      this.vy = (this.startY - this.y) * this.strength;
-      this.vx *= this.pullBackDist / 200;
-      this.vy *= this.pullBackDist / 200;
-      this.landDistance = dist(this.startX, this.startY, dartboard.x, dartboard.y) + this.pullBackDist / 2;
-    }
-    this.dragging = false;
+ fly() {
+  if (this.dragging && !this.landed) {
+    this.isFlying = true;
+
+    // Calculate the angle at which the chicken is pulled back
+    let pullbackAngle = atan2(this.startY - this.y, this.startX - this.x);
+
+    // Normalize the pullback angle to a value between 0 and 1
+    let normalizedAngle = map(pullbackAngle, -PI, PI, 0, 1);
+
+    // Use the normalized angle to determine a sector on the dartboard
+    let sector = floor(normalizedAngle * dartboard.segments.length);
+    let segmentAngle = map(sector, 0, dartboard.segments.length, 0, TWO_PI);
+
+    // Use the pullback distance to determine the radius within the dartboard
+    let normalizedDistance = map(this.pullBackDist, 0, this.maxRange, 0, 1);
+    let radius = dartboard.r * normalizedDistance;
+
+    // Now, calculate the landing spot on the dartboard
+    let landX = dartboard.x + radius * cos(segmentAngle);
+    let landY = dartboard.y + radius * sin(segmentAngle);
+
+    // Calculate the velocity needed to reach the landing spot
+    let landVX = (landX - this.startX) * this.strength;
+    let landVY = (landY - this.startY) * this.strength;
+
+    this.vx = landVX;
+    this.vy = landVY;
+
+    this.landDistance = dist(this.startX, this.startY, landX, landY);
   }
+  this.dragging = false;
+}
+
 
   rotate() {
     if (!this.hasRotated) {
@@ -177,9 +198,6 @@ class Dartboard {
 
   contains(x, y) {
     return dist(this.x, this.y, x, y) <= this.r;
-  }
-  display() {
-    image(dartboardImg, this.x, this.y, this.r*2, this.r*2);
   }
 
 getScore(x, y) {

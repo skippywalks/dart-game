@@ -5,14 +5,18 @@ let draggingChicken = null;
 let dartboardRadius = 200;
 const numOfChickens = 3;
 let wind = -.1; // Change this to the strength of wind you want
+let missSound;
 
-let scoringURL = 'https://cdn.jsdelivr.net/gh/skippywalks/dart-game@master/assets/scoring.png'; // The URL to your image on jsDelivr
+
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
-  dartboardImg = loadImage('assets/dartboard.png'); // add this line
-  scoringImg = loadImage(scoringURL); // scoringURL is the jsDelivr URL
-scoringImg.loadPixels();
+  dartboardImg = loadImage('assets/dartboard.png');
+  scoringImg = loadImage('assets/scoring.png');
+  scoringImg.loadPixels();
+  missSound = loadSound('assets/missSound.mp3');
+  pepeSound = loadSound('assets/pepe.mp3'); // Add this line
+  pepeloveyouSound = loadSound('assets/pepeloveyou.mp3'); // Add this line
 }
 
 function setup() {
@@ -119,31 +123,34 @@ class Chicken {
   }
 
   update() {
-    if (this.dragging) {
-      this.x = mouseX + this.offsetX;
-      this.y = mouseY + this.offsetY;
-    } else if (this.isFlying && !this.landed) {
-this.vx += wind; // Add wind
-      this.x += this.vx;
-      this.y += this.vy;
-      this.vy += 0.25;
+  if (this.dragging) {
+    this.x = mouseX + this.offsetX;
+    this.y = mouseY + this.offsetY;
+  } else if (this.isFlying && !this.landed) {
+    this.vx += wind; // Add wind
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy += 0.25;
 
-      let spikeX = this.x + 50 * cos(this.rotation + PI / 2);
-      let spikeY = this.y - 50 * sin(this.rotation + PI / 2);
+    let spikeX = this.x + 50 * cos(this.rotation + PI / 2);
+    let spikeY = this.y - 50 * sin(this.rotation + PI / 2);
 
-      if (dartboard.contains(spikeX, spikeY)) {
-        this.landing = true;
-      }
+    if (dartboard.contains(spikeX, spikeY)) {
+      this.landing = true;
+    }
 
-      if (this.isFlying && !this.landed && dist(this.startX, this.startY, spikeX, spikeY) >= this.landDistance) {
+    if (this.isFlying && !this.landed && dist(this.startX, this.startY, spikeX, spikeY) >= this.landDistance) {
       this.landed = true;
       this.vx = 0;
       this.vy = 0;
       this.score = dartboard.getScore(spikeX, spikeY);
       console.log(`Chicken landed in: ${this.score}`);
+      if (this.score === 0) {
+        missSound.play();
+      }
     }
   }
-  }
+}
 
  fly() {
   if (this.dragging && !this.landed) {
@@ -201,37 +208,57 @@ class Dartboard {
   }
 
 getScore(x, y) {
-    // Normalize the coordinates relative to the image
-    let normalizedX = map(x, this.x - this.r, this.x + this.r, 0, scoringImg.width);
-    let normalizedY = map(y, this.y - this.r, this.y + this.r, 0, scoringImg.height);
+  // Normalize the coordinates relative to the image
+  let normalizedX = map(x, this.x - this.r, this.x + this.r, 0, scoringImg.width);
+  let normalizedY = map(y, this.y - this.r, this.y + this.r, 0, scoringImg.height);
 
-    // Get the pixel color from the scoring image
-    let c = scoringImg.get(normalizedX, normalizedY);
+  // Get the pixel color from the scoring image
+  let c = scoringImg.get(normalizedX, normalizedY);
 
-    // Call getColorScore() with the color of the pixel
-    return this.getColorScore(c);
+  // Call getColorScore() with the color of the pixel
+  let score = this.getColorScore(c);
+
+  // Play the appropriate sound based on the score
+  if (score === 50 || score === 25) { // inner or outer bullseye
+    pepeloveyouSound.play();
+  } else if (score === 20 || score === 19 || score === 18 || score === 17 || score === 16 || score === 15) { // any other score
+    pepeSound.play();
+  } else if (score === 0) { // Missed dartboard
+    missSound.play();
   }
+
+  return score;
+}
 
   getColorScore(color) {
-    let r = red(color);
-    let g = green(color);
-    let b = blue(color);
+  let r = red(color);
+  let g = green(color);
+  let b = blue(color);
 
-    if (r === 250 && g === 0 && b === 250) {
-      return 50; // Inner bullseye
-    } else if (r === 0 && g === 250 && b === 250) {
-      return 25; // Outer bullseye
-    } else if (r === 250 && g === 0 && b === 0) {
-      return 0; // Missed dartboard
-    } else {
-      if (r > 0 && g === 0 && b === 0) {
-        return r / 10; // Single
-      } else if (g > 0 && r === 0 && b === 0) {
-        return g / 10 * 2; // Double
-      } else if (b > 0 && r === 0 && g === 0) {
-        return b / 10 * 3; // Triple
-      } 
-    }
-    return 0;
+  if (r === 250 && g === 0 && b === 250) {
+    pepeloveyouSound.play(); // Inner bullseye
+    return 50; 
+  } else if (r === 0 && g === 250 && b === 250) {
+    pepeloveyouSound.play(); // Outer bullseye
+    return 25; 
+  } else if (r === 250 && g === 0 && b === 0) {
+    missSound.play(); // Missed dartboard
+    return 0; 
+  } else {
+    let singleScores = [20, 19, 18, 17, 16, 15];
+    if (r > 0 && g === 0 && b === 0) {
+      if (singleScores.includes(r / 10)) { // Single of special numbers
+        pepeSound.play();
+      }
+      return r / 10; // Single
+    } else if (g > 0 && r === 0 && b === 0) {
+      pepeSound.play(); // Double
+      return g / 10 * 2; 
+    } else if (b > 0 && r === 0 && g === 0) {
+      pepeSound.play(); // Triple
+      return b / 10 * 3; 
+    } 
   }
+  return 0;
+}
 }

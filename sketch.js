@@ -1,4 +1,5 @@
 let chickenImg, dartboardImg, scoringImg;
+let chicken; // Here
 let chickens = [];
 let dartboard;
 let draggingChicken = null;
@@ -24,8 +25,11 @@ function setup() {
   imageMode(CENTER);
 
   for (let i = 0; i < numOfChickens; i++) {
-  chickens[i] = new Chicken((width / 8) + i * 75, height - 400);
-}
+    chickens[i] = new Chicken((width / 8) + i * 75, height - 400);
+    if (i === 0) {
+      chicken = chickens[i]; // Here
+    }
+  }
 
   dartboard = new Dartboard(width - dartboardRadius - 50, dartboardRadius + 50, dartboardRadius); 
 
@@ -126,6 +130,14 @@ class Chicken {
   if (this.dragging) {
     this.x = mouseX + this.offsetX;
     this.y = mouseY + this.offsetY;
+    
+    // Prevent the chicken from being dragged over the dartboard
+    if (dist(this.x, this.y, dartboard.x, dartboard.y) < dartboard.r + 400) {
+      let angle = atan2(this.y - dartboard.y, this.x - dartboard.x);
+      this.x = dartboard.x + (dartboard.r + 400) * cos(angle);
+      this.y = dartboard.y + (dartboard.r + 400) * sin(angle);
+    }
+  
   } else if (this.isFlying && !this.landed) {
     this.vx += wind; // Add wind
     this.x += this.vx;
@@ -230,7 +242,7 @@ getScore(x, y) {
   return score;
 }
 
-  getColorScore(color) {
+getColorScore(color) {
   let r = red(color);
   let g = green(color);
   let b = blue(color);

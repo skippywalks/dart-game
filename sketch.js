@@ -1,14 +1,12 @@
 let chickenImg, dartboardImg, scoringImg;
-let chicken; // Here
 let chickens = [];
 let dartboard;
 let draggingChicken = null;
 let dartboardRadius = 200;
 const numOfChickens = 3;
-let wind = -.1; // Change this to the strength of wind you want
+let wind = -.2; // Change this to the strength of wind you want
 let missSound;
-
-
+let gameStarted = false;
 
 function preload() {
   chickenImg = loadImage('assets/chicken.png');
@@ -26,9 +24,6 @@ function setup() {
 
   for (let i = 0; i < numOfChickens; i++) {
     chickens[i] = new Chicken((width / 8) + i * 75, height - 400);
-    if (i === 0) {
-      chicken = chickens[i]; // Here
-    }
   }
 
   dartboard = new Dartboard(width - dartboardRadius - 50, dartboardRadius + 50, dartboardRadius); 
@@ -36,26 +31,49 @@ function setup() {
   let resetButton = select('#resetButton');
   resetButton.mousePressed(resetGame);
 }
+ 
 
 function draw() {
   background(100);
-  
-  image(dartboardImg, dartboard.x, dartboard.y, dartboard.r*2, dartboard.r*2); // Display the dartboard image
+
+  // Draw the dartboard
+  image(dartboardImg, dartboard.x, dartboard.y, dartboard.r*2, dartboard.r*2); 
+
+  // Calculate the rectangle parameters
+  let rectWidth = dartboard.r * 2 * 0.7; // 80% of the dartboard's width
+  let rectHeight = 300; // 300 pixels
+  let rectX = dartboard.x - rectWidth / 2; // Center the rectangle horizontally
+  let rectY = dartboard.y + dartboard.r + 50; // Position the rectangle 80 pixels below the dartboard
+
+  // Draw the rectangle
+  fill(0); // Set the fill color to black
+  rect(rectX, rectY, rectWidth, rectHeight);
 
   for (let chicken of chickens) {
     chicken.update();
     chicken.display();
   }
 
-  fill(255);
-  textSize(16);
+  // Draw the text inside the rectangle if the game has not started
+  if (!gameStarted) {
+    fill(255); // Set the fill color to white for the text
+    textSize(16);
+    textAlign(CENTER, TOP); // Align the text to the top
+    text("Welcome to the Lobby.\nClose two 20's to begin your game.", dartboard.x, rectY + 20);
+  }
 }
+
 
 function mousePressed() {
   for (let chicken of chickens) {
     if (dist(mouseX, mouseY, chicken.x, chicken.y) < 50 && !chicken.isFlying && !chicken.landed) {
       chicken.rotate();
       draggingChicken = chicken;
+      if (!gameStarted) {
+        gameStarted = true;
+        // Here, you can also call any functions related to starting the game, e.g.
+        // startGame();  // Assuming you have a startGame() function
+      }
     }
   }
 }
@@ -77,7 +95,8 @@ function resetGame() {
   chickens = [];
   for (let i = 0; i < numOfChickens; i++) {
     chickens[i] = new Chicken((width / 8) + i * 75, height - 400);
-  }
+ gameStarted = false;
+}
 }
 
 class Chicken {
